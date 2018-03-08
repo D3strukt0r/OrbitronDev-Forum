@@ -49,12 +49,12 @@
             <ul class="navbar-nav ml-auto">
                 {{ service.page_links }}
 
-                {% if app.user is not null and app.user.id == current_forum.owner.id %}
+                {% if app.user is not empty and app.user.id == current_forum.owner.id %}
                     <li class="nav-item">
                         <a href="{{ path('forum_admin', {'forum': current_forum.url, 'page': 'home'}) }}" class="nav-link bg-danger text-white mr-2">{{ 'service_general.nav.admin'|trans }}</a>
                     </li>
                 {% endif %}
-                {% if app.user is not null %}
+                {% if app.user is not empty %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle p-0" href="{{ path('user', {'username': app.user.username}) }}" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img class="rounded-circle" src="http://account.localhost/api/get_img?user_id={{ app.user.id }}&height=36&width=36" />
