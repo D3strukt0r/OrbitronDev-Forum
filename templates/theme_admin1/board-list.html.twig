@@ -1,0 +1,49 @@
+{# Reference: https://stackoverflow.com/questions/40707461/recursive-macro-in-twig #}
+{% macro recursiveCategory(category, level) %}
+    {% import _self as self %}
+    {% set level = level|default(0) %}
+    <ul class="list-unstyled">
+        <li class="media {% if level > 0 %}mt-3{% endif %}">
+            <img class="mr-3" src="//placehold.it/64x64" alt="Image">
+            <div class="media-body">
+                <h5 class="mt-0">{{ category.title }} (ID: {{ category.id }})</h5>
+                {{ category.description }}
+                {% if category.boards|length %}
+                    {% for child in category.boards %}
+                        {{ self.recursiveCategory(child, level + 1) }}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </li>
+    </ul>
+{% endmacro %}
+{% import _self as self %}
+
+{% extends 'theme_admin1/layout_admin.html.twig' %}
+
+{% block breadcrumb %}
+    <div class="g-hidden-sm-down g-bg-gray-light-v8 g-pa-20">
+        <ul class="u-list-inline g-color-gray-dark-v6">
+
+            <li class="list-inline-item">
+                <span class="g-valign-middle">{{ 'admin.page.board_list.breadcrumb.forum'|trans }}</span>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="g-pa-20">
+        <h1 class="g-font-weight-300 g-font-size-28 g-color-black g-mb-40">{{ 'admin.page.board_list.title'|trans }}</h1>
+
+        <a href="{{ path('forum_admin', {'forum': current_forum.url, 'page': 'new-board'}) }}" class="btn btn-success mb-3">{{ 'admin.page.board_list.create'|trans }}</a>
+        <div class="card">
+            <div class="card-body">
+                {% for board in board_list %}
+                    {{ self.recursiveCategory(board) }}
+                {% endfor %}
+            </div>
+        </div>
+        <a href="{{ path('forum_admin', {'forum': current_forum.url, 'page': 'new-board'}) }}" class="btn btn-success mt-3">{{ 'admin.page.board_list.create'|trans }}</a>
+    </div>
+{% endblock %}

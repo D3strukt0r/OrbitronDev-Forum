@@ -1,0 +1,162 @@
+general:
+    title: 'OrbitronDev Forum'
+    link:
+        list: 'All forums'
+        support: 'Support'
+        faq: 'FAQ'
+        settings: 'Settings'
+        logout: 'Logout'
+    copyright: '© 2013-2018 OrbitronDev. All rights reserved.'
+new_forum:
+    title: 'Create new forum'
+    form:
+        name:
+            label: 'Forum name'
+            constraints:
+                not_blank: 'Please enter a name'
+            help: 'How should your forum be called?'
+        url:
+            label: 'Forum url'
+            constraints:
+                not_blank: 'Please enter a url'
+            help: 'This will be used to access your forum over "https://forum.orbitrondev.org/<url>/".'
+        send:
+            label: 'Create'
+list_forums:
+    title: 'Discover all forums'
+    breadcrumb:
+        forum: 'Forums'
+    admin:
+        title: 'Administrate your forums'
+        new: 'Create new forum'
+        panel: 'Admin panel'
+    list:
+        title: 'Forum list'
+        name: 'Name'
+        owner: 'Owner'
+        tools: 'Tools'
+admin:
+    nav:
+        title: 'Forum'
+        quick_links: 'Quick links'
+        back: 'Back to service'
+        logout: 'Logout'
+    close: 'Close'
+    form:
+        create_board:
+            name:
+                label: 'Board name'
+                help: 'How should your board be called?'
+            description:
+                label: 'Description'
+                help: 'You want to add a description for more information? (optional)'
+            parent:
+                label: 'Parent'
+                help: 'For what board should this be the child?'
+            type:
+                label: 'Type'
+                help: 'What do you want to add?'
+            send:
+                label: 'Submit'
+    page:
+        not_found:
+            title: '404 Error'
+            text: 'Page not found'
+        home:
+            title: 'Main dashboard'
+            breadcrumb:
+                home: 'Home'
+        board_list:
+            title: 'List all boards'
+            breadcrumb:
+                forum: 'Forums'
+            create: 'Create new board'
+        new_board:
+            title: 'New Board'
+            breadcrumb:
+                board: 'Boards'
+                create: 'Create...'
+            board_added: 'Your board/category was added!'
+            board_not_added: "Your board/category wasn't added! Try again"
+            block1:
+                title: 'Add board'
+
+service_general:
+    nav:
+        profile: 'Profile'
+        settings: 'Settings'
+        logout: 'Logout'
+        login: 'Login'
+        admin: 'Admin Panel'
+        toggle_nav: 'Toggle navigation'
+    footer:
+        disclaimer: 'This page has been created with services by OrbitronDev'
+service_index:
+    title: 'Index'
+    breadcrumb:
+        home: 'Home'
+    no_board: 'There is no board where someone can post. If you are the admin, create a new board!'
+    table:
+        boards: 'Boards'
+        topics: 'Topics'
+        posts: 'Posts'
+        last_post: 'Last post'
+        by: 'by'
+service_board:
+    breadcrumb:
+        home: 'Home'
+    table:
+        boards: 'Boards'
+        topics: 'Topics'
+        posts: 'Posts'
+        last_post: 'Last post'
+        by: 'by'
+        replies: 'Replies'
+        views: 'Views'
+    pagination:
+        previous: 'Previous'
+        next: 'Next'
+    create_thread: 'Create thread'
+service_thread:
+    breadcrumb:
+        home: 'Home'
+    pagination:
+        previous: 'Previous'
+        next: 'Next'
+    edit: 'Edit'
+    reply: 'Post reply'
+service_create_thread:
+    title: 'Create new thread'
+    breadcrumb:
+        home: 'Home'
+    thread_created: 'Thread created!'
+    thread_not_created: 'Thread not created! Try again'
+    view: 'View!'
+    form:
+        title:
+            label: 'Thread name'
+            placeholder: 'e.g. I need help'
+            constraints:
+                not_blank: 'Please enter a title'
+        message:
+            constraints:
+                not_blank: 'Please enter a message'
+        send:
+            label: 'Create thread'
+service_create_post:
+    breadcrumb:
+        home: 'Home'
+    post_created: 'Post created!'
+    post_not_created: 'Post not created! Try again'
+    view: 'View!'
+    form:
+        title:
+            label: 'Post title'
+            placeholder: 'e.g. RE: I need help'
+            constraints:
+                not_blank: 'Please enter a title'
+        message:
+            constraints:
+                not_blank: 'Please enter a message'
+        send:
+            label: 'Post reply'

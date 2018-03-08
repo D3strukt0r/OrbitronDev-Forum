@@ -1,0 +1,43 @@
+index:
+    path: /
+    controller: App\Controller\DefaultController::index
+new:
+    path: /new-forum
+    controller: App\Controller\DefaultController::newForum
+
+login:
+    path: /login
+    controller: App\Controller\UserController::login
+login_check:
+    path: /login-check
+logout:
+    path: /logout
+user:
+    path: /user/{username}
+    controller: App\Controller\UserController::user
+
+setup:
+    path: /setup
+    controller: App\Controller\SetupController::setup
+
+forum_index:
+    path: /{forum}
+    controller: App\Controller\DefaultController::forumIndex
+forum_board:
+    path: /{forum}/board/{board}
+    controller: App\Controller\DefaultController::forumBoard
+forum_create_thread:
+    path: /{forum}/board/{board}/create-thread
+    controller: App\Controller\DefaultController::forumCreateThread
+forum_thread:
+    path: /{forum}/thread/{thread}
+    controller: App\Controller\DefaultController::forumThread
+forum_create_post:
+    path: /{forum}/thread/{thread}/create-post
+    controller: App\Controller\DefaultController::forumCreatePost
+forum_search:
+    path: /{forum}/search
+    controller: App\Controller\DefaultController::forumSearch
+forum_admin:
+    path: /{forum}/admin/{page}
+    controller: App\Controller\DefaultController::forumAdmin

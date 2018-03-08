@@ -1,0 +1,133 @@
+{% extends 'theme1/layout.html.twig' %}
+
+{% set service_page_links %}
+    {% for text,link in current_forum.links %}
+        <li class="nav-item"><a href="{{ link }}" class="nav-link">{{ text }}</a></li>
+    {% endfor %}
+{% endset %}
+{% set service = {
+    'page_name': current_forum.name,
+    'page_logo_link': '/' ~ current_forum.url,
+    'page_author': current_forum.owner.username,
+    'page_description': current_forum.description,
+    'page_keywords': current_forum.keywords|join(','),
+    'page_links': service_page_links,
+    'page_google_webdev': current_forum.googleWebDeveloper,
+    'page_ga_id': current_forum.googleAnalyticsId,
+    'page_logo_url': ''
+} %}
+
+{% block title %}{{ 'service_index.title'|trans }} | {{ service.page_name }}{% endblock %}
+
+{% block header %}
+    <div class="container">
+        <h1 class="mt-4 mb-2 pb-2 border-bottom">{{ current_forum.name }}</h1>
+    </div>
+{% endblock %}
+
+{% block breadcrumb %}
+    <nav aria-label="breadcrumb">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">{{ 'service_index.breadcrumb.home'|trans }}</li>
+            </ol>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {% if board_tree|length == 0 %}
+            <hr />
+            <div class="alert alert-danger" role="alert">
+                {{ 'service_index.no_board'|trans }}
+            </div>
+        {% else %}
+            {% for board in board_tree %}
+                {% if board.type == 2 and board.parentBoard is null %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover table-sm">
+                            <thead>
+                            <tr>
+                                <th class="text-center" width="56%">{{ board.title }}</th>
+                                <th class="text-center" width="7%" >{{ 'service_index.table.topics'|trans }}</th>
+                                <th class="text-center" width="7%">{{ 'service_index.table.posts'|trans }}</th>
+                                <th class="text-center" width="30%">{{ 'service_index.table.last_post'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if board.boards|length > 0 %}
+                                {% for subboard in board.boards %}
+                                    <tr>
+                                        <td class="forum-category">
+                                            <p><a href="{{ path('forum_board', {'forum': current_forum.url, 'board': subboard.id}) }}">{{ subboard.title }}</a></p>
+                                            <p>{{ subboard.description }}</p>
+                                        </td>
+                                        <td class="text-center"><br /><span class="badge badge-secondary">{{ subboard.threadCount }}</span></td>
+                                        <td class="text-center"><br /><span class="badge badge-secondary">{{ subboard.postCount }}</span></td>
+                                        <td>
+                                            {% if subboard.lastPostUser is not null %}
+                                                <p>
+                                                    <i>{{ 'service_index.table.last_post'|trans }}</i> {{ 'service_index.table.by'|trans }}
+                                                    <a href="{{ path('user', {'username': subboard.lastPostUser.username}) }}">{{ subboard.lastPostUser.username }}</a>
+                                                </p>
+                                                <p>{{ subboard.lastPostTime|date('d/m/Y H:i') }}</p>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {# Check if there is a board without a category #}
+            {% set counter = 0 %}
+            {% for board in board_tree %}
+                {% if board.type == 1  %}
+                    {% set counter = counter + 1 %}
+                {% endif %}
+            {% endfor %}
+            {# Get all boards without category #}
+            {% if counter > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover table-sm">
+                        <thead>
+                        <tr>
+                            <th class="text-center" width="56%">{{ 'service_index.table.boards'|trans }}</th>
+                            <th class="text-center" width="7%" >{{ 'service_index.table.topics'|trans }}</th>
+                            <th class="text-center" width="7%">{{ 'service_index.table.posts'|trans }}</th>
+                            <th class="text-center" width="30%">{{ 'service_index.table.last_post'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for board in board_tree %}
+                            {% if board.type == 1 %}
+                                <tr>
+                                    <td class="forum-category">
+                                        <p><a href="{{ path('forum_board', {'forum': current_forum.url, 'board': board.id}) }}">{{ board.title }}</a></p>
+                                        <p>{{ board.description }}</p>
+                                    </td>
+                                    <td class="text-center"><br /><span class="badge badge-secondary">{{ board.threadCount }}</span></td>
+                                    <td class="text-center"><br /><span class="badge badge-secondary">{{ board.postCount }}</span></td>
+                                    <td>
+                                        {% if board.lastPostUser is not null %}
+                                            <p>
+                                                <i>{{ 'service_index.table.last_post'|trans }}</i> {{ 'service_index.table.by'|trans }}
+                                                <a href="{{ path('user', {'username': board.lastPostUser.username}) }}">{{ board.lastPostUser.username }}</a>
+                                            </p>
+                                            <p>{{ board.lastPostTime|date('d/m/Y H:i') }}</p>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

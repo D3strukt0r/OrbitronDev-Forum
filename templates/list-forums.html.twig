@@ -1,0 +1,72 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ 'list_forums.title'|trans }} | {{ parent() }}{% endblock %}
+
+{% block content %}
+    <!-- Breadcrumbs -->
+    <section class="g-bg-gray-light-v5 g-py-50" style="background-image: url(https://web-assets.orbitrondev.org/unify-2.5/img/bg/pattern2.png);">
+        <div class="container">
+            <div class="d-sm-flex text-center">
+                <div class="align-self-center"><h2 class="h3 g-font-weight-300 w-100 g-mb-10 g-mb-0--md">{{ 'list_forums.title'|trans }}</h2></div>
+                <div class="align-self-center ml-auto">
+                    <ul class="u-list-inline">
+                        <li class="list-inline-item g-color-primary"><span>{{ 'list_forums.breadcrumb.forum'|trans }}</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Breadcrumbs -->
+
+    <div class="container g-pt-30 g-pb-40">
+        {% if app.user is not empty %}
+            <div class="card g-mb-40">
+                <div class="card-header">
+                    {{ 'list_forums.admin.title'|trans }}
+                    <div class="pull-right">
+                        <a href="{{ path('new') }}" class="btn btn-success btn-xs" role="button">{{ 'list_forums.admin.new'|trans }}</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover">
+                            <tbody>
+                            {% for forum in forums_list %}
+                                {% if app.user.id == forum.owner.id %}
+                                    <tr>
+                                        <td><a href="{{ path('forum_index', {'forum': forum.url}) }}">{{ forum.name }}</a></td>
+                                        <td><a href="{{ path('forum_admin', {'forum': forum.url, 'page': 'home'}) }}">{{ 'list_forums.admin.panel'|trans }}</a></td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <section id="forum-list">
+            <h2 class="page-header">{{ 'list_forums.list.title'|trans }}</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ 'list_forums.list.name'|trans }}</th>
+                            <th>{{ 'list_forums.list.owner'|trans }}</th>
+                            <th>{{ 'list_forums.list.tools'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for forum in forums_list %}
+                            <tr>
+                                <td><a href="{{ path('forum_index', {'forum': forum.url}) }}">{{ forum.name }}</a></td>
+                                <td>{{ forum.owner.username }}</td>
+                                <td>{% if app.user.id == forum.owner.id %}<a href="{{ path('forum_admin', {'forum': forum.url, 'page': 'home'}) }}">{{ 'list_forums.admin.panel'|trans }}</a>{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table><!-- /.table -->
+            </div><!-- /.table-responsive -->
+        </section><!-- /#forum-list -->
+    </div>
+{% endblock %}
