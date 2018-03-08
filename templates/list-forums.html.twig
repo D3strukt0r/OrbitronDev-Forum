@@ -61,7 +61,7 @@
                             <tr>
                                 <td><a href="{{ path('forum_index', {'forum': forum.url}) }}">{{ forum.name }}</a></td>
                                 <td>{{ forum.owner.username }}</td>
-                                <td>{% if app.user.id == forum.owner.id %}<a href="{{ path('forum_admin', {'forum': forum.url, 'page': 'home'}) }}">{{ 'list_forums.admin.panel'|trans }}</a>{% endif %}</td>
+                                <td>{% if app.user is not null and app.user.id == forum.owner.id %}<a href="{{ path('forum_admin', {'forum': forum.url, 'page': 'home'}) }}">{{ 'list_forums.admin.panel'|trans }}</a>{% endif %}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

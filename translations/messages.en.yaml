@@ -6,6 +6,7 @@ general:
         faq: 'FAQ'
         settings: 'Settings'
         logout: 'Logout'
+        login: 'Login'
     copyright: '© 2013-2018 OrbitronDev. All rights reserved.'
 new_forum:
     title: 'Create new forum'

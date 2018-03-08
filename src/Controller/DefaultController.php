@@ -11,6 +11,7 @@ use App\Form\PostType;
 use App\Form\ThreadType;
 use App\Service\ForumHelper;
 use App\Service\AdminControlPanel;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,10 +19,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class DefaultController extends Controller
 {
-    public function index()
+    public function index(ObjectManager $em)
     {
-        $em = $this->getDoctrine()->getManager();
-
         /** @var \App\Entity\Forum[] $forumList */
         $forumList = $em->getRepository(Forum::class)->findAll();
 
@@ -30,12 +29,15 @@ class DefaultController extends Controller
         ]);
     }
 
-    public function newForum(Request $request, ForumHelper $helper)
+    public function newForum(ObjectManager $em, Request $request, ForumHelper $helper)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var \App\Entity\User $user */
+        //////////// TEST IF USER IS LOGGED IN ////////////
+        /** @var \App\Entity\User|null $user */
         $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw $this->createAccessDeniedException();
+        }
+        //////////// END TEST IF USER IS LOGGED IN ////////////
 
         $createForumForm = $this->createForm(NewForumType::class);
 
@@ -89,12 +91,10 @@ class DefaultController extends Controller
         ]);
     }
 
-    public function forumIndex($forum)
+    public function forumIndex(ObjectManager $em, $forum)
     {
-        $em = $this->getDoctrine()->getManager();
-
         //////////// TEST IF FORUM EXISTS ////////////
-        /** @var \App\Entity\Forum $forum */
+        /** @var \App\Entity\Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
         if (is_null($forum)) {
             throw $this->createNotFoundException();
@@ -111,12 +111,10 @@ class DefaultController extends Controller
         ]);
     }
 
-    public function forumBoard(Request $request, ForumHelper $helper, $forum, $board)
+    public function forumBoard(ObjectManager $em, Request $request, ForumHelper $helper, $forum, $board)
     {
-        $em = $this->getDoctrine()->getManager();
-
         //////////// TEST IF FORUM EXISTS ////////////
-        /** @var \App\Entity\Forum $forum */
+        /** @var \App\Entity\Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
         if (is_null($forum)) {
             throw $this->createNotFoundException();
@@ -124,7 +122,7 @@ class DefaultController extends Controller
         //////////// END TEST IF FORUM EXISTS ////////////
 
         //////////// TEST IF BOARD EXISTS ////////////
-        /** @var \App\Entity\Board $board */
+        /** @var \App\Entity\Board|null $board */
         $board = $em->getRepository(Board::class)->findOneBy(['id' => $board]);
         if (is_null($board)) {
             throw $this->createNotFoundException();
@@ -172,12 +170,10 @@ class DefaultController extends Controller
         ]);
     }
 
-    public function forumThread(Request $request, ForumHelper $helper, $forum, $thread)
+    public function forumThread(ObjectManager $em, Request $request, ForumHelper $helper, $forum, $thread)
     {
-        $em = $this->getDoctrine()->getManager();
-
         //////////// TEST IF FORUM EXISTS ////////////
-        /** @var \App\Entity\Forum $forum */
+        /** @var \App\Entity\Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
         if (is_null($forum)) {
             throw $this->createNotFoundException();
@@ -185,7 +181,7 @@ class DefaultController extends Controller
         //////////// END TEST IF FORUM EXISTS ////////////
 
         //////////// TEST IF THREAD EXISTS ////////////
-        /** @var \App\Entity\Thread $thread */
+        /** @var \App\Entity\Thread|null $thread */
         $thread = $em->getRepository(Thread::class)->findOneBy(['id' => $thread]);
         if (is_null($thread)) {
             throw $this->createNotFoundException();
@@ -233,12 +229,18 @@ class DefaultController extends Controller
         ]);
     }
 
-    public function forumCreatePost(Request $request, ForumHelper $helper, $forum, $thread)
+    public function forumCreatePost(ObjectManager $em, Request $request, ForumHelper $helper, $forum, $thread)
     {
-        $em = $this->getDoctrine()->getManager();
+        //////////// TEST IF USER IS LOGGED IN ////////////
+        /** @var \App\Entity\User|null $user */
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw $this->createAccessDeniedException();
+        }
+        //////////// END TEST IF USER IS LOGGED IN ////////////
 
         //////////// TEST IF FORUM EXISTS ////////////
-        /** @var \App\Entity\Forum $forum */
+        /** @var \App\Entity\Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
         if (is_null($forum)) {
             throw $this->createNotFoundException();
@@ -246,7 +248,7 @@ class DefaultController extends Controller
         //////////// END TEST IF FORUM EXISTS ////////////
 
         //////////// TEST IF THREAD EXISTS ////////////
-        /** @var \App\Entity\Thread $thread */
+        /** @var \App\Entity\Thread|null $thread */
         $thread = $em->getRepository(Thread::class)->findOneBy(['id' => $thread]);
         if (is_null($thread)) {
             throw $this->createNotFoundException();
@@ -254,9 +256,6 @@ class DefaultController extends Controller
 
         $board = $thread->getBoard();
         //////////// END TEST IF THREAD EXISTS ////////////
-
-        /** @var \App\Entity\User $user */
-        $user = $this->getUser();
 
         // Breadcrumb
         $breadcrumb = $helper->getBreadcrumb($board);
@@ -315,12 +314,18 @@ class DefaultController extends Controller
         ]);
     }
 
-    public function forumCreateThread(Request $request, ForumHelper $helper, $forum, $board)
+    public function forumCreateThread(ObjectManager $em, Request $request, ForumHelper $helper, $forum, $board)
     {
-        $em = $this->getDoctrine()->getManager();
+        //////////// TEST IF USER IS LOGGED IN ////////////
+        /** @var \App\Entity\User|null $user */
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw $this->createAccessDeniedException();
+        }
+        //////////// END TEST IF USER IS LOGGED IN ////////////
 
         //////////// TEST IF FORUM EXISTS ////////////
-        /** @var \App\Entity\Forum $forum */
+        /** @var \App\Entity\Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
         if (is_null($forum)) {
             throw $this->createNotFoundException();
@@ -328,15 +333,12 @@ class DefaultController extends Controller
         //////////// END TEST IF FORUM EXISTS ////////////
 
         //////////// TEST IF BOARD EXISTS ////////////
-        /** @var \App\Entity\Board $board */
+        /** @var \App\Entity\Board|null $board */
         $board = $em->getRepository(Board::class)->findOneBy(['id' => $board]);
         if (is_null($board)) {
             throw $this->createNotFoundException();
         }
         //////////// TEST IF BOARD EXISTS ////////////
-
-        /** @var \App\Entity\User $user */
-        $user = $this->getUser();
 
         // Breadcrumb
         $breadcrumb = $helper->getBreadcrumb($board);
@@ -405,24 +407,24 @@ class DefaultController extends Controller
         ]);
     }
 
-    public function forumAdmin(Request $request, $forum, $page)
+    public function forumAdmin(ObjectManager $em, Request $request, $forum, $page)
     {
-        $em = $this->getDoctrine()->getManager();
+        //////////// TEST IF USER IS LOGGED IN ////////////
+        /** @var \App\Entity\User|null $user */
+        $user = $this->getUser();
+        if (!$user instanceof UserInterface) {
+            throw $this->createAccessDeniedException();
+        }
+        //////////// END TEST IF USER IS LOGGED IN ////////////
 
         //////////// TEST IF FORUM EXISTS ////////////
-        /** @var \App\Entity\Forum $forum */
+        /** @var \App\Entity\Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
         if (is_null($forum)) {
             throw $this->createNotFoundException();
         }
         //////////// END TEST IF FORUM EXISTS ////////////
 
-        // If user is logged in, redirect to panel
-        /** @var \App\Entity\User $user */
-        $user = $this->getUser();
-        if (!$user instanceof UserInterface) {
-            return $this->redirectToRoute('login');
-        }
         if ($user->getId() != $forum->getOwner()->getId()) {
             throw $this->createAccessDeniedException();
         }

@@ -75,7 +75,7 @@
                                             <img src="http://account.localhost/api/get_img?user_id={{ post.user.id }}&height=200&width=200" class="img-fluid rounded" alt="">
                                         </a>
                                     </div>
-                                    {% if post.user.id == app.user.id %}
+                                    {% if app.user is not null and app.user.id == post.user.id %}
                                         {# TODO: Add edit function #}
                                         <p><a href="#edit" class="btn btn-primary btn-sm">{{ 'service_thread.edit'|trans }}</a></p>
                                     {% endif %}
@@ -178,7 +178,7 @@
                     </ul>
                 {% endif %}
             </div>
-            {% if app.user.id > -1 %}
+            {% if app.user is not null %}
                 <div class="col-md-4">
                     <p class="text-right"><a href="{{ path('forum_create_post', {'forum': current_forum.url, 'thread': current_thread.id}) }}" class="btn btn-primary">{{ 'service_thread.reply'|trans }}</a></p>
                 </div>

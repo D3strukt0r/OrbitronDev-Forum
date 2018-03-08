@@ -68,7 +68,7 @@
                                 <li class="nav-item g-my-5"><a href="{{ path('index') }}" class="nav-link">{{ 'general.link.list'|trans }}</a></li>
                                 <li class="nav-item g-my-5"><a href="#!" class="nav-link">{{ 'general.link.support'|trans }}</a></li>
                                 <li class="nav-item g-my-5"><a href="#!" class="nav-link">{{ 'general.link.faq'|trans }}</a></li>
-                                {% if app.user.id > -1 %}
+                                {% if app.user is not null %}
                                     <li class="nav-item hs-has-sub-menu g-my-5">
                                         <a href="https://account.orbitrondev.org" class="nav-link" id="nav-link-1" aria-haspopup="true" aria-expanded="false" aria-controls="nav-submenu-1">{{ app.user.username }}</a>
                                         <!-- Submenu -->
@@ -78,6 +78,8 @@
                                         </ul>
                                         <!-- End Submenu -->
                                     </li>
+                                {% else %}
+                                    <li class="nav-item g-my-5"><a href="{{ path('login') }}" class="nav-link">{{ 'general.link.login'|trans }}</a></li>
                                 {% endif %}
                             </ul>
                         </div>
