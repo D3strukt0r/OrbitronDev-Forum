@@ -32,8 +32,11 @@ class CustomiseController extends Controller
         return 40;
     }
 
-    public function customiseTheme()
+    public function customiseTheme($navigation, $forum)
     {
-        throw $this->createNotFoundException();
+        return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
+            'navigation' => $navigation,
+            'forum'      => $forum,
+        ]);
     }
 }

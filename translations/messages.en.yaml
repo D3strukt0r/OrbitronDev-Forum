@@ -38,7 +38,7 @@ list_forums:
         tools: 'Tools'
 admin:
     nav:
-        title: 'Forum'
+        title: 'Admin'
         quick_links: 'Quick links'
         back: 'Back to service'
         logout: 'Logout'

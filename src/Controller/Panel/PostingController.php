@@ -32,8 +32,11 @@ class PostingController extends Controller
         return 20;
     }
 
-    public function bbCode()
+    public function bbCode($navigation, $forum)
     {
-        throw $this->createNotFoundException();
+        return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
+            'navigation' => $navigation,
+            'forum'      => $forum,
+        ]);
     }
 }

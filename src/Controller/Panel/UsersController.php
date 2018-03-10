@@ -48,18 +48,27 @@ class UsersController extends Controller
         return 30;
     }
 
-    public function ban()
+    public function ban($navigation, $forum)
     {
-        throw $this->createNotFoundException();
+        return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
+            'navigation' => $navigation,
+            'forum'      => $forum,
+        ]);
     }
 
-    public function rank()
+    public function rank($navigation, $forum)
     {
-        throw $this->createNotFoundException();
+        return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
+            'navigation' => $navigation,
+            'forum'      => $forum,
+        ]);
     }
 
-    public function groups()
+    public function groups($navigation, $forum)
     {
-        throw $this->createNotFoundException();
+        return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
+            'navigation' => $navigation,
+            'forum'      => $forum,
+        ]);
     }
 }
