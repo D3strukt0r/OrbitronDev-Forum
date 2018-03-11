@@ -8,6 +8,17 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class ForumHelper
 {
+    public static $settings = [
+        'forum' => [
+            'name' => [
+                'min_length' => 4,
+            ],
+            'url' => [
+                'min_length' => 3,
+            ],
+        ],
+    ];
+
     const DEFAULT_SHOW_THREAD_COUNT = 10;
 
     /**

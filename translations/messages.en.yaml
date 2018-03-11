@@ -13,13 +13,9 @@ new_forum:
     form:
         name:
             label: 'Forum name'
-            constraints:
-                not_blank: 'Please enter a name'
             help: 'How should your forum be called?'
         url:
             label: 'Forum url'
-            constraints:
-                not_blank: 'Please enter a url'
             help: 'This will be used to access your forum over "https://forum.orbitrondev.org/<url>/".'
         send:
             label: 'Create'
@@ -137,11 +133,6 @@ service_create_thread:
         title:
             label: 'Thread name'
             placeholder: 'e.g. I need help'
-            constraints:
-                not_blank: 'Please enter a title'
-        message:
-            constraints:
-                not_blank: 'Please enter a message'
         send:
             label: 'Create thread'
 service_create_post:
@@ -154,10 +145,5 @@ service_create_post:
         title:
             label: 'Post title'
             placeholder: 'e.g. RE: I need help'
-            constraints:
-                not_blank: 'Please enter a title'
-        message:
-            constraints:
-                not_blank: 'Please enter a message'
         send:
             label: 'Post reply'

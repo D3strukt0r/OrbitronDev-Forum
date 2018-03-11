@@ -14,23 +14,20 @@ class PostType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var \App\Entity\Thread $thread */
-        $thread = $options['thread'];
-
         $builder
             ->add('title', TextType::class, [
                 'label'       => 'service_create_post.form.title.label',
                 'attr'        => [
                     'placeholder' => 'service_create_post.form.title.placeholder',
                 ],
-                'data'        => 'RE: '.$thread->getTopic(),
+                'data'        => 'RE: '.$options['topic'],
                 'constraints' => [
-                    new NotBlank(['message' => 'service_create_post.form.title.constraints.not_blank']),
+                    new NotBlank(['message' => 'new_post.title.not_blank']),
                 ],
             ])
             ->add('message', TextareaType::class, [
                 'constraints' => [
-                    new NotBlank(['message' => 'service_create_post.form.message.constraints.not_blank']),
+                    new NotBlank(['message' => 'new_post.message.not_blank']),
                 ],
             ])
             ->add('send', SubmitType::class, [
@@ -44,7 +41,7 @@ class PostType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'thread' => null,
+            'topic' => '',
         ]);
     }
 }

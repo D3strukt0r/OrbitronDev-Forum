@@ -43,37 +43,19 @@ class DefaultController extends Controller
 
         $createForumForm->handleRequest($request);
         if ($createForumForm->isSubmitted() && $createForumForm->isValid()) {
-            $errorMessages = [];
-            if (strlen($forumName = trim($createForumForm->get('name')->getData())) == 0) {
-                $errorMessages[] = '';
-                $createForumForm->get('name')->addError(new FormError('Please give your forum a name'));
-            } elseif (strlen($forumName) < 4) {
-                $errorMessages[] = '';
-                $createForumForm->get('name')->addError(new FormError('Your forum must have minimally 4 characters'));
-            }
-            if (strlen($forumUrl = trim($createForumForm->get('url')->getData())) == 0) {
-                $errorMessages[] = '';
-                $createForumForm->get('url')->addError(new FormError('Please give your forum an unique url to access it'));
-            } elseif (strlen($forumUrl) < 3) {
-                $errorMessages[] = '';
-                $createForumForm->get('url')->addError(new FormError('Your forum must url have minimally 3 characters'));
-            } elseif (preg_match('/[^a-z_\-0-9]/i', $forumUrl)) {
-                $errorMessages[] = '';
-                $createForumForm->get('url')->addError(new FormError('Only use a-z, A-Z, 0-9, _, -'));
-            } elseif (in_array($forumUrl, ['new-forum', 'admin'])) {
-                $errorMessages[] = '';
-                $createForumForm->get('url')->addError(new FormError('It\'s prohibited to use this url'));
-            } elseif ($helper->urlExists($forumUrl)) {
-                $errorMessages[] = '';
-                $createForumForm->get('url')->addError(new FormError('This url is already in use'));
+            $formData = $createForumForm->getData();
+            $error = false;
+            if ($helper->urlExists($formData['url'])) {
+                $error = true;
+                $createForumForm->get('url')->addError(new FormError('This url is already in use')); // TODO: Missing translation
             }
 
-            if (!count($errorMessages)) {
+            if (!$error) {
                 try {
                     $newForum = new Forum();
                     $newForum
-                        ->setName($forumName)
-                        ->setUrl($forumUrl)
+                        ->setName($formData['name'])
+                        ->setUrl($formData['url'])
                         ->setOwner($user)
                         ->setCreated(new \DateTime());
                     $em->persist($newForum);
@@ -81,7 +63,7 @@ class DefaultController extends Controller
 
                     return $this->redirectToRoute('forum_index', ['forum' => $newForum->getUrl()]);
                 } catch (\Exception $e) {
-                    $createForumForm->addError(new FormError('We could not create your forum. ('.$e->getMessage().')'));
+                    $createForumForm->addError(new FormError('We could not create your forum. ('.$e->getMessage().')')); // TODO: Missing translation
                 }
             }
         }
@@ -137,8 +119,8 @@ class DefaultController extends Controller
 
         // Get all threads
         $pagination = [];
-        $pagination['item_limit'] = !is_null($request->query->get('show')) ? (int)$request->query->get('show') : ForumHelper::DEFAULT_SHOW_THREAD_COUNT;
-        $pagination['current_page'] = !is_null($request->query->get('page')) ? (int)$request->query->get('page') : 1;
+        $pagination['item_limit'] = $request->query->getInt('show', ForumHelper::DEFAULT_SHOW_THREAD_COUNT);
+        $pagination['current_page'] = $request->query->getInt('page', 1);
 
         /** @var \App\Entity\Thread[] $threads */
         $threads = $em->getRepository(Thread::class)->findBy(
@@ -197,8 +179,8 @@ class DefaultController extends Controller
 
         // Get all posts
         $pagination = [];
-        $pagination['item_limit'] = !is_null($request->query->get('show')) ? (int)$request->query->get('show') : ForumHelper::DEFAULT_SHOW_THREAD_COUNT;
-        $pagination['current_page'] = !is_null($request->query->get('page')) ? (int)$request->query->get('page') : 1;
+        $pagination['item_limit'] = $request->query->getInt('show', ForumHelper::DEFAULT_SHOW_THREAD_COUNT);
+        $pagination['current_page'] = $request->query->getInt('page', 1);
 
         /** @var \App\Entity\Post[] $posts */
         $posts = $em->getRepository(Post::class)->findBy(
@@ -260,48 +242,45 @@ class DefaultController extends Controller
         // Breadcrumb
         $breadcrumb = $helper->getBreadcrumb($board);
 
-        $createPostForm = $this->createForm(PostType::class, null, ['thread' => $thread]);
+        $createPostForm = $this->createForm(PostType::class, null, ['topic' => $thread->getTopic()]);
 
-        if ($request->isMethod('POST')) {
-            $createPostForm->handleRequest($request);
+        $createPostForm->handleRequest($request);
+        if ($createPostForm->isSubmitted() && $createPostForm->isValid()) {
+            $formData = $createPostForm->getData();
 
-            if ($createPostForm->isSubmitted() && $createPostForm->isValid()) {
-                $formData = $createPostForm->getData();
+            try {
+                $time = new \DateTime();
 
-                try {
-                    $time = new \DateTime();
+                // Add post entity
+                $newPost = new Post();
+                $newPost
+                    ->setThread($thread)
+                    ->setUser($user)
+                    ->setPostNumber($thread->getReplies() + 2)
+                    ->setSubject($formData['title'])
+                    ->setMessage($formData['message'])
+                    ->setCreatedOn($time);
+                $em->persist($newPost);
 
-                    // Add post entity
-                    $newPost = new Post();
-                    $newPost
-                        ->setThread($thread)
-                        ->setUser($user)
-                        ->setPostNumber($thread->getReplies() + 2)
-                        ->setSubject($formData['title'])
-                        ->setMessage($formData['message'])
-                        ->setCreatedOn($time);
-                    $em->persist($newPost);
+                // Update thread count and last post user and time
+                $thread->setReplies($thread->getReplies() + 1);
+                $thread->setLastPostUser($user);
+                $thread->setLastPostTime($time);
 
-                    // Update thread count and last post user and time
-                    $thread->setReplies($thread->getReplies() + 1);
-                    $thread->setLastPostUser($user);
-                    $thread->setLastPostTime($time);
-
-                    $board->setPostCount($board->getPostCount() + 1);
-                    $board->setLastPostUser($user);
-                    $board->setLastPostTime($time);
-                    foreach ($breadcrumb as $item) {
-                        $item->setPostCount($item->getPostCount() + 1);
-                        $item->setLastPostUser($user);
-                        $item->setLastPostTime($time);
-                    }
-
-                    $em->flush();
-
-                    $this->addFlash('post_created', '');
-                } catch (\Exception $e) {
-                    $this->addFlash('post_not_created', '');
+                $board->setPostCount($board->getPostCount() + 1);
+                $board->setLastPostUser($user);
+                $board->setLastPostTime($time);
+                foreach ($breadcrumb as $item) {
+                    $item->setPostCount($item->getPostCount() + 1);
+                    $item->setLastPostUser($user);
+                    $item->setLastPostTime($time);
                 }
+
+                $em->flush();
+
+                $this->addFlash('post_created', '');
+            } catch (\Exception $e) {
+                $this->addFlash('post_not_created', '');
             }
         }
 
@@ -343,59 +322,56 @@ class DefaultController extends Controller
         // Breadcrumb
         $breadcrumb = $helper->getBreadcrumb($board);
 
-        $createThreadForm = $this->createForm(ThreadType::class, null, ['board' => $board]);
+        $createThreadForm = $this->createForm(ThreadType::class);
 
-        if ($request->isMethod('POST')) {
-            $createThreadForm->handleRequest($request);
+        $createThreadForm->handleRequest($request);
+        if ($createThreadForm->isSubmitted() && $createThreadForm->isValid()) {
+            $formData = $createThreadForm->getData();
 
-            if ($createThreadForm->isSubmitted() && $createThreadForm->isValid()) {
-                $formData = $createThreadForm->getData();
+            try {
+                // Add thread and post entity
+                $time = new \DateTime();
+                $newThread = new Thread();
+                $newThread
+                    ->setUser($user)
+                    ->setBoard($board)
+                    ->setTopic($formData['title'])
+                    ->setCreatedOn($time)
+                    ->setLastPostUser($user)
+                    ->setLastPostTime($time);
+                $newPost = new Post();
+                $newPost
+                    ->setUser($user)
+                    ->setPostNumber(1)
+                    ->setSubject($formData['title'])
+                    ->setMessage($formData['message'])
+                    ->setCreatedOn($time);
+                $newThread->addPost($newPost);
+                $em->persist($newThread);
+                $em->persist($newPost);
 
-                try {
-                    // Add thread and post entity
-                    $time = new \DateTime();
-                    $newThread = new Thread();
-                    $newThread
-                        ->setUser($user)
-                        ->setBoard($board)
-                        ->setTopic($formData['title'])
-                        ->setCreatedOn($time)
-                        ->setLastPostUser($user)
-                        ->setLastPostTime($time);
-                    $newPost = new Post();
-                    $newPost
-                        ->setUser($user)
-                        ->setPostNumber(1)
-                        ->setSubject($formData['title'])
-                        ->setMessage($formData['message'])
-                        ->setCreatedOn($time);
-                    $newThread->addPost($newPost);
-                    $em->persist($newThread);
-                    $em->persist($newPost);
-
-                    // Update thread count and last post user and time
-                    $board->setThreadCount($board->getThreadCount() + 1);
-                    $board->setLastPostUser($user);
-                    $board->setLastPostTime($time);
-                    foreach ($breadcrumb as $item) {
-                        $item->setThreadCount($item->getThreadCount() + 1);
-                        $item->setLastPostUser($user);
-                        $item->setLastPostTime($time);
-                    }
-
-                    $em->flush();
-
-                    $this->addFlash('thread_created', '');
-                    return $this->render('theme1/create-thread.html.twig', [
-                        'current_forum'      => $forum,
-                        'current_board'      => $board,
-                        'breadcrumb'         => $breadcrumb,
-                        'new_thread_id'      => $newThread->getId(),
-                        'create_thread_form' => $createThreadForm->createView(),
-                    ]);
-                } catch (\Exception $e) {
-                    $this->addFlash('thread_not_created', '');
+                // Update thread count and last post user and time
+                $board->setThreadCount($board->getThreadCount() + 1);
+                $board->setLastPostUser($user);
+                $board->setLastPostTime($time);
+                foreach ($breadcrumb as $item) {
+                    $item->setThreadCount($item->getThreadCount() + 1);
+                    $item->setLastPostUser($user);
+                    $item->setLastPostTime($time);
                 }
+
+                $em->flush();
+
+                $this->addFlash('thread_created', '');
+                return $this->render('theme1/create-thread.html.twig', [
+                    'current_forum'      => $forum,
+                    'current_board'      => $board,
+                    'breadcrumb'         => $breadcrumb,
+                    'new_thread_id'      => $newThread->getId(),
+                    'create_thread_form' => $createThreadForm->createView(),
+                ]);
+            } catch (\Exception $e) {
+                $this->addFlash('thread_not_created', '');
             }
         }
 

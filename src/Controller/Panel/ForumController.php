@@ -3,7 +3,6 @@
 namespace App\Controller\Panel;
 
 use App\Entity\Board;
-use App\Entity\Forum;
 use App\Form\CreateBoardType;
 use App\Service\ForumHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

@@ -1,0 +1,19 @@
+new_forum:
+    name:
+        not_blank: 'Please give your forum a name'
+        min_length: 'Your forum must have minimally {{ limit }} characters'
+    url:
+        not_blank: 'Please give your forum an unique url to access it'
+        min_length: 'Your forum url must have minimally {{ limit }} characters'
+        regex: 'Only use a-z, A-Z, 0-9, _, -'
+        not_equal_to: "It's prohibited to use this url"
+new_post:
+    title:
+        not_blank: 'Please enter a title'
+    message:
+        not_blank: 'Please enter a message'
+new_thread:
+    title:
+        not_blank: 'Please enter a title'
+    message:
+        not_blank: 'Please enter a message'
