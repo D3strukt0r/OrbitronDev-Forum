@@ -29,7 +29,7 @@ class DefaultController extends Controller
         ]);
     }
 
-    public function newForum(ObjectManager $em, Request $request, ForumHelper $helper)
+    public function newForum(ObjectManager $em, Request $request)
     {
         //////////// TEST IF USER IS LOGGED IN ////////////
         /** @var \App\Entity\User|null $user */
@@ -44,27 +44,20 @@ class DefaultController extends Controller
         $createForumForm->handleRequest($request);
         if ($createForumForm->isSubmitted() && $createForumForm->isValid()) {
             $formData = $createForumForm->getData();
-            $error = false;
-            if ($helper->urlExists($formData['url'])) {
-                $error = true;
-                $createForumForm->get('url')->addError(new FormError('This url is already in use')); // TODO: Missing translation
-            }
 
-            if (!$error) {
-                try {
-                    $newForum = new Forum();
-                    $newForum
-                        ->setName($formData['name'])
-                        ->setUrl($formData['url'])
-                        ->setOwner($user)
-                        ->setCreated(new \DateTime());
-                    $em->persist($newForum);
-                    $em->flush();
+            try {
+                $newForum = new Forum();
+                $newForum
+                    ->setName($formData['name'])
+                    ->setUrl($formData['url'])
+                    ->setOwner($user)
+                    ->setCreated(new \DateTime());
+                $em->persist($newForum);
+                $em->flush();
 
-                    return $this->redirectToRoute('forum_index', ['forum' => $newForum->getUrl()]);
-                } catch (\Exception $e) {
-                    $createForumForm->addError(new FormError('We could not create your forum. ('.$e->getMessage().')')); // TODO: Missing translation
-                }
+                return $this->redirectToRoute('forum_index', ['forum' => $newForum->getUrl()]);
+            } catch (\Exception $e) {
+                $createForumForm->addError(new FormError('We could not create your forum. ('.$e->getMessage().')')); // TODO: Missing translation
             }
         }
 

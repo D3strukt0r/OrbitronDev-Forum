@@ -7,6 +7,7 @@ new_forum:
         min_length: 'Your forum url must have minimally {{ limit }} characters'
         regex: 'Only use a-z, A-Z, 0-9, _, -'
         not_equal_to: "It's prohibited to use this url"
+        already_in_use: 'This url is already in use'
 new_post:
     title:
         not_blank: 'Please enter a title'
