@@ -1,4 +1,5 @@
 new_forum:
+    not_created: 'We could not create your forum. (%error_message%)'
     name:
         not_blank: 'Please give your forum a name'
         min_length: 'Your forum must have minimally {{ limit }} characters'

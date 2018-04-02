@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class DefaultController extends Controller
 {
@@ -29,7 +30,7 @@ class DefaultController extends Controller
         ]);
     }
 
-    public function newForum(ObjectManager $em, Request $request)
+    public function newForum(ObjectManager $em, Request $request, TranslatorInterface $translator)
     {
         //////////// TEST IF USER IS LOGGED IN ////////////
         /** @var \App\Entity\User|null $user */
@@ -57,7 +58,7 @@ class DefaultController extends Controller
 
                 return $this->redirectToRoute('forum_index', ['forum' => $newForum->getUrl()]);
             } catch (\Exception $e) {
-                $createForumForm->addError(new FormError('We could not create your forum. ('.$e->getMessage().')')); // TODO: Missing translation
+                $createForumForm->addError(new FormError($translator->trans('new_forum.not_created', ['%error_message%' => $e->getMessage()], 'validators')));
             }
         }
 
