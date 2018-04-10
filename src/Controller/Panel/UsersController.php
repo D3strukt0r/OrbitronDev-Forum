@@ -10,35 +10,35 @@ class UsersController extends Controller
     {
         return [
             [
-                'type'   => 'group',
+                'type' => 'group',
                 'parent' => 'root',
-                'id'     => 'users',
-                'title'  => 'Users',
-                'icon'   => 'hs-admin-user',
+                'id' => 'users',
+                'title' => 'Users',
+                'icon' => 'hs-admin-user',
             ],
             [
-                'type'   => 'link',
+                'type' => 'link',
                 'parent' => 'users',
-                'id'     => 'bans',
-                'title'  => 'Ban user',
-                'href'   => 'users-ban',
-                'view'   => 'UsersController::ban',
+                'id' => 'bans',
+                'title' => 'Ban user',
+                'href' => 'users-ban',
+                'view' => 'UsersController::ban',
             ],
             [
-                'type'   => 'link',
+                'type' => 'link',
                 'parent' => 'users',
-                'id'     => 'ranks',
-                'title'  => 'User ranks',
-                'href'   => 'users-rank',
-                'view'   => 'UsersController::rank',
+                'id' => 'ranks',
+                'title' => 'User ranks',
+                'href' => 'users-rank',
+                'view' => 'UsersController::rank',
             ],
             [
-                'type'   => 'link',
+                'type' => 'link',
                 'parent' => 'users',
-                'id'     => 'groups',
-                'title'  => 'Manage groups',
-                'href'   => 'groups',
-                'view'   => 'UsersController::groups',
+                'id' => 'groups',
+                'title' => 'Manage groups',
+                'href' => 'groups',
+                'view' => 'UsersController::groups',
             ],
         ];
     }
@@ -52,7 +52,7 @@ class UsersController extends Controller
     {
         return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
             'navigation' => $navigation,
-            'forum'      => $forum,
+            'forum' => $forum,
         ]);
     }
 
@@ -60,7 +60,7 @@ class UsersController extends Controller
     {
         return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
             'navigation' => $navigation,
-            'forum'      => $forum,
+            'forum' => $forum,
         ]);
     }
 
@@ -68,7 +68,7 @@ class UsersController extends Controller
     {
         return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
             'navigation' => $navigation,
-            'forum'      => $forum,
+            'forum' => $forum,
         ]);
     }
 }

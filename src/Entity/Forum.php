@@ -40,7 +40,7 @@ class Forum
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", options={"default":false})
+     * @ORM\Column(type="boolean", options={"default": false})
      */
     protected $closed = false;
 
@@ -82,7 +82,7 @@ class Forum
 
     /**
      * @var string|null
-     * @ORM\Column(type="string", nullable=true, options={"default":"en-US"})
+     * @ORM\Column(type="string", nullable=true, options={"default": "en-US"})
      */
     protected $language;
 
@@ -444,20 +444,20 @@ class Forum
     public function toArray(): array
     {
         return [
-            'id'                   => $this->id,
-            'name'                 => $this->name,
-            'url'                  => $this->url,
-            'owner'                => $this->owner,
-            'closed'               => $this->closed,
-            'closed_message'       => $this->closed_message,
-            'keywords'             => $this->keywords,
-            'description'          => $this->description,
-            'google_analytics_id'  => $this->google_analytics_id,
+            'id' => $this->id,
+            'name' => $this->name,
+            'url' => $this->url,
+            'owner' => $this->owner,
+            'closed' => $this->closed,
+            'closed_message' => $this->closed_message,
+            'keywords' => $this->keywords,
+            'description' => $this->description,
+            'google_analytics_id' => $this->google_analytics_id,
             'google_web_developer' => $this->google_web_developer,
-            'links'                => $this->links,
-            'language'             => $this->language,
-            'copyright'            => $this->copyright,
-            'created'              => $this->created,
+            'links' => $this->links,
+            'language' => $this->language,
+            'copyright' => $this->copyright,
+            'created' => $this->created,
         ];
     }
 }

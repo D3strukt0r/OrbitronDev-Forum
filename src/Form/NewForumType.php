@@ -29,31 +29,31 @@ class NewForumType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label'       => 'new_forum.form.name.label',
+                'label' => 'new_forum.form.name.label',
                 'constraints' => [
                     new NotBlank(['message' => 'new_forum.name.not_blank']),
                     new Length([
-                        'min'        => ForumHelper::$settings['forum']['name']['min_length'],
+                        'min' => ForumHelper::$settings['forum']['name']['min_length'],
                         'minMessage' => 'new_forum.name.min_length',
                     ]),
                 ],
             ])
             ->add('url', TextType::class, [
-                'label'       => 'new_forum.form.url.label',
+                'label' => 'new_forum.form.url.label',
                 'constraints' => [
                     new NotBlank(['message' => 'new_forum.url.not_blank']),
                     new Length([
-                        'min'        => ForumHelper::$settings['forum']['url']['min_length'],
+                        'min' => ForumHelper::$settings['forum']['url']['min_length'],
                         'minMessage' => 'new_forum.url.min_length',
                     ]),
                     new Regex([
                         'pattern' => '/[^a-zA-Z_\-0-9]/i',
                         'message' => 'new_forum.url.regex',
-                        'match'   => false,
+                        'match' => false,
                     ]),
                     new Expression([
                         'expression' => 'value not in ["new-forum", "admin", "login", "login-check", "logout", "user", "setup"]',
-                        'message'    => 'new_forum.url.not_equal_to',
+                        'message' => 'new_forum.url.not_equal_to',
                     ]),
                     new Callback(function ($object, ExecutionContextInterface $context, $payload) {
                         if ($this->helper->urlExists($object)) {
@@ -63,16 +63,16 @@ class NewForumType extends AbstractType
                 ],
             ])
             ->add('recaptcha', ReCaptchaType::class, [
-                'attr'        => [
+                'attr' => [
                     'options' => [
                         'theme' => 'light',
-                        'type'  => 'image',
-                        'size'  => 'normal',
+                        'type' => 'image',
+                        'size' => 'normal',
                         'defer' => true,
                         'async' => true,
                     ],
                 ],
-                'mapped'      => false,
+                'mapped' => false,
                 'constraints' => [
                     new ReCaptchaTrue(),
                 ],

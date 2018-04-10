@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Service\ForumHelper;
 use Decoda\Decoda;
 use Decoda\Hook\EmoticonHook;
 use Doctrine\ORM\Mapping as ORM;
@@ -163,6 +162,7 @@ class Post
         $bbParser = new Decoda($this->message);
         $bbParser->defaults();
         $bbParser->addHook(new EmoticonHook());
+
         return $bbParser->convertLineBreaks($bbParser->parse());
     }
 
@@ -204,13 +204,13 @@ class Post
     public function toArray(): array
     {
         return [
-            'id'          => $this->id,
-            'thread'      => $this->thread,
+            'id' => $this->id,
+            'thread' => $this->thread,
             'post_number' => $this->post_number,
-            'user'        => $this->user,
-            'subject'     => $this->subject,
-            'message'     => $this->message,
-            'created_on'  => $this->created_on,
+            'user' => $this->user,
+            'subject' => $this->subject,
+            'message' => $this->message,
+            'created_on' => $this->created_on,
         ];
     }
 }

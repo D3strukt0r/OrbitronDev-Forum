@@ -9,8 +9,8 @@ use App\Entity\Thread;
 use App\Form\NewForumType;
 use App\Form\PostType;
 use App\Form\ThreadType;
-use App\Service\ForumHelper;
 use App\Service\AdminControlPanel;
+use App\Service\ForumHelper;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormError;
@@ -72,7 +72,7 @@ class DefaultController extends Controller
         //////////// TEST IF FORUM EXISTS ////////////
         /** @var \App\Entity\Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
-        if (is_null($forum)) {
+        if (null === $forum) {
             throw $this->createNotFoundException();
         }
         //////////// END TEST IF FORUM EXISTS ////////////
@@ -83,7 +83,7 @@ class DefaultController extends Controller
 
         return $this->render('theme1/index.html.twig', [
             'current_forum' => $forum,
-            'board_tree'    => $boardTree,
+            'board_tree' => $boardTree,
         ]);
     }
 
@@ -92,7 +92,7 @@ class DefaultController extends Controller
         //////////// TEST IF FORUM EXISTS ////////////
         /** @var \App\Entity\Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
-        if (is_null($forum)) {
+        if (null === $forum) {
             throw $this->createNotFoundException();
         }
         //////////// END TEST IF FORUM EXISTS ////////////
@@ -100,7 +100,7 @@ class DefaultController extends Controller
         //////////// TEST IF BOARD EXISTS ////////////
         /** @var \App\Entity\Board|null $board */
         $board = $em->getRepository(Board::class)->findOneBy(['id' => $board]);
-        if (is_null($board)) {
+        if (null === $board) {
             throw $this->createNotFoundException();
         }
         //////////// TEST IF BOARD EXISTS ////////////
@@ -139,10 +139,10 @@ class DefaultController extends Controller
         return $this->render('theme1/board.html.twig', [
             'current_forum' => $forum,
             'current_board' => $board,
-            'breadcrumb'    => $breadcrumb,
-            'board_tree'    => $boardTree,
-            'threads'       => $threads,
-            'pagination'    => $pagination,
+            'breadcrumb' => $breadcrumb,
+            'board_tree' => $boardTree,
+            'threads' => $threads,
+            'pagination' => $pagination,
         ]);
     }
 
@@ -151,7 +151,7 @@ class DefaultController extends Controller
         //////////// TEST IF FORUM EXISTS ////////////
         /** @var \App\Entity\Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
-        if (is_null($forum)) {
+        if (null === $forum) {
             throw $this->createNotFoundException();
         }
         //////////// END TEST IF FORUM EXISTS ////////////
@@ -159,7 +159,7 @@ class DefaultController extends Controller
         //////////// TEST IF THREAD EXISTS ////////////
         /** @var \App\Entity\Thread|null $thread */
         $thread = $em->getRepository(Thread::class)->findOneBy(['id' => $thread]);
-        if (is_null($thread)) {
+        if (null === $thread) {
             throw $this->createNotFoundException();
         }
         $thread->setViews($thread->getViews() + 1);
@@ -196,12 +196,12 @@ class DefaultController extends Controller
         $pagination['last_page_m1'] = $pagination['pages_count'] - 1;
 
         return $this->render('theme1/thread.html.twig', [
-            'current_forum'  => $forum,
-            'current_board'  => $board,
+            'current_forum' => $forum,
+            'current_board' => $board,
             'current_thread' => $thread,
-            'posts'          => $posts,
-            'breadcrumb'     => $breadcrumb,
-            'pagination'     => $pagination,
+            'posts' => $posts,
+            'breadcrumb' => $breadcrumb,
+            'pagination' => $pagination,
         ]);
     }
 
@@ -218,7 +218,7 @@ class DefaultController extends Controller
         //////////// TEST IF FORUM EXISTS ////////////
         /** @var \App\Entity\Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
-        if (is_null($forum)) {
+        if (null === $forum) {
             throw $this->createNotFoundException();
         }
         //////////// END TEST IF FORUM EXISTS ////////////
@@ -226,7 +226,7 @@ class DefaultController extends Controller
         //////////// TEST IF THREAD EXISTS ////////////
         /** @var \App\Entity\Thread|null $thread */
         $thread = $em->getRepository(Thread::class)->findOneBy(['id' => $thread]);
-        if (is_null($thread)) {
+        if (null === $thread) {
             throw $this->createNotFoundException();
         }
 
@@ -279,10 +279,10 @@ class DefaultController extends Controller
         }
 
         return $this->render('theme1/create-post.html.twig', [
-            'current_forum'    => $forum,
-            'current_board'    => $board,
-            'current_thread'   => $thread,
-            'breadcrumb'       => $breadcrumb,
+            'current_forum' => $forum,
+            'current_board' => $board,
+            'current_thread' => $thread,
+            'breadcrumb' => $breadcrumb,
             'create_post_form' => $createPostForm->createView(),
         ]);
     }
@@ -300,7 +300,7 @@ class DefaultController extends Controller
         //////////// TEST IF FORUM EXISTS ////////////
         /** @var \App\Entity\Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
-        if (is_null($forum)) {
+        if (null === $forum) {
             throw $this->createNotFoundException();
         }
         //////////// END TEST IF FORUM EXISTS ////////////
@@ -308,7 +308,7 @@ class DefaultController extends Controller
         //////////// TEST IF BOARD EXISTS ////////////
         /** @var \App\Entity\Board|null $board */
         $board = $em->getRepository(Board::class)->findOneBy(['id' => $board]);
-        if (is_null($board)) {
+        if (null === $board) {
             throw $this->createNotFoundException();
         }
         //////////// TEST IF BOARD EXISTS ////////////
@@ -357,11 +357,12 @@ class DefaultController extends Controller
                 $em->flush();
 
                 $this->addFlash('thread_created', '');
+
                 return $this->render('theme1/create-thread.html.twig', [
-                    'current_forum'      => $forum,
-                    'current_board'      => $board,
-                    'breadcrumb'         => $breadcrumb,
-                    'new_thread_id'      => $newThread->getId(),
+                    'current_forum' => $forum,
+                    'current_board' => $board,
+                    'breadcrumb' => $breadcrumb,
+                    'new_thread_id' => $newThread->getId(),
                     'create_thread_form' => $createThreadForm->createView(),
                 ]);
             } catch (\Exception $e) {
@@ -370,9 +371,9 @@ class DefaultController extends Controller
         }
 
         return $this->render('theme1/create-thread.html.twig', [
-            'current_forum'      => $forum,
-            'current_board'      => $board,
-            'breadcrumb'         => $breadcrumb,
+            'current_forum' => $forum,
+            'current_board' => $board,
+            'breadcrumb' => $breadcrumb,
             'create_thread_form' => $createThreadForm->createView(),
         ]);
     }
@@ -390,12 +391,12 @@ class DefaultController extends Controller
         //////////// TEST IF FORUM EXISTS ////////////
         /** @var \App\Entity\Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
-        if (is_null($forum)) {
+        if (null === $forum) {
             throw $this->createNotFoundException();
         }
         //////////// END TEST IF FORUM EXISTS ////////////
 
-        if ($user->getId() != $forum->getOwner()->getId()) {
+        if ($user->getId() !== $forum->getOwner()->getId()) {
             throw $this->createAccessDeniedException();
         }
 
@@ -415,16 +416,17 @@ class DefaultController extends Controller
             next($list);
         }
 
-        if (!is_null($key)) {
+        if (null !== $key) {
             if (is_callable('\\App\\Controller\\Panel\\'.$list[$key]['view'])) {
                 $view = $list[$key]['view'];
             }
         }
         $response = $this->forward('App\\Controller\\Panel\\'.$view, [
             'navigation' => $navigationLinks,
-            'request'    => $request,
-            'forum'      => $forum,
+            'request' => $request,
+            'forum' => $forum,
         ]);
+
         return $response;
     }
 }

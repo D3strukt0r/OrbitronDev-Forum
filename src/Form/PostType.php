@@ -16,11 +16,11 @@ class PostType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'label'       => 'service_create_post.form.title.label',
-                'attr'        => [
+                'label' => 'service_create_post.form.title.label',
+                'attr' => [
                     'placeholder' => 'service_create_post.form.title.placeholder',
                 ],
-                'data'        => 'RE: '.$options['topic'],
+                'data' => 'RE: '.$options['topic'],
                 'constraints' => [
                     new NotBlank(['message' => 'new_post.title.not_blank']),
                 ],

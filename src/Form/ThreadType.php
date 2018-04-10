@@ -15,8 +15,8 @@ class ThreadType extends AbstractType
     {
         $builder
             ->add('title', TextType::class, [
-                'label'       => 'service_create_thread.form.title.label',
-                'attr'        => [
+                'label' => 'service_create_thread.form.title.label',
+                'attr' => [
                     'placeholder' => 'service_create_thread.form.title.placeholder',
                 ],
                 'constraints' => [

@@ -15,31 +15,30 @@ class CreateBoardType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label'    => 'admin.form.create_board.name.label',
+                'label' => 'admin.form.create_board.name.label',
                 'required' => true,
             ])
             ->add('description', TextType::class, [
-                'label'    => 'admin.form.create_board.description.label',
+                'label' => 'admin.form.create_board.description.label',
                 'required' => false,
             ])
             ->add('parent', ChoiceType::class, [
-                'label'    => 'admin.form.create_board.parent.label',
+                'label' => 'admin.form.create_board.parent.label',
                 'required' => true,
-                'choices'  => $options['board_list'],
+                'choices' => $options['board_list'],
                 'expanded' => false, // select tag
                 'multiple' => false,
             ])
             ->add('type', ChoiceType::class, [
-                'label'       => 'admin.form.create_board.type.label',
-                'required'    => false,
-                'choices'     => [
-                    'Board'    => 1,
+                'label' => 'admin.form.create_board.type.label',
+                'required' => false,
+                'choices' => [
+                    'Board' => 1,
                     'Category' => 2,
                 ],
                 'placeholder' => false,
-                'expanded'    => true, // radio buttons
-                'multiple'    => false,
-
+                'expanded' => true, // radio buttons
+                'multiple' => false,
             ])
             ->add('send', SubmitType::class, [
                 'label' => 'admin.form.create_board.send.label',

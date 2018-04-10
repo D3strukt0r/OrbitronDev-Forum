@@ -10,19 +10,19 @@ class PostingController extends Controller
     {
         return [
             [
-                'type'   => 'group',
+                'type' => 'group',
                 'parent' => 'root',
-                'id'     => 'posting',
-                'title'  => 'Posting',
-                'icon'   => 'hs-admin-comment',
+                'id' => 'posting',
+                'title' => 'Posting',
+                'icon' => 'hs-admin-comment',
             ],
             [
-                'type'   => 'link',
+                'type' => 'link',
                 'parent' => 'posting',
-                'id'     => 'bbcode',
-                'title'  => 'BBCode',
-                'href'   => 'posting-bbcode',
-                'view'   => 'PostingController::bbCode',
+                'id' => 'bbcode',
+                'title' => 'BBCode',
+                'href' => 'posting-bbcode',
+                'view' => 'PostingController::bbCode',
             ],
         ];
     }
@@ -36,7 +36,7 @@ class PostingController extends Controller
     {
         return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
             'navigation' => $navigation,
-            'forum'      => $forum,
+            'forum' => $forum,
         ]);
     }
 }

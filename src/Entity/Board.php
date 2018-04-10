@@ -69,13 +69,13 @@ class Board
 
     /**
      * @var int
-     * @ORM\Column(type="integer", options={"default":0})
+     * @ORM\Column(type="integer", options={"default": 0})
      */
     protected $thread_count = 0;
 
     /**
      * @var int
-     * @ORM\Column(type="integer", options={"default":0})
+     * @ORM\Column(type="integer", options={"default": 0})
      */
     protected $post_count = 0;
 
@@ -128,7 +128,7 @@ class Board
     /**
      * @return \App\Entity\Board|null
      */
-    public function getParentBoard(): ?Board
+    public function getParentBoard(): ?self
     {
         return $this->parent_board;
     }
@@ -138,7 +138,7 @@ class Board
      *
      * @return $this
      */
-    public function setParentBoard(Board $parent_board = null): self
+    public function setParentBoard(self $parent_board = null): self
     {
         $this->parent_board = $parent_board;
 
@@ -333,7 +333,7 @@ class Board
      *
      * @return $this
      */
-    public function addBoard(Board $board): self
+    public function addBoard(self $board): self
     {
         $this->boards->add($board);
         $board->setParentBoard($this);
@@ -346,7 +346,7 @@ class Board
      *
      * @return $this
      */
-    public function removeBoard(Board $board): self
+    public function removeBoard(self $board): self
     {
         if ($this->boards->contains($board)) {
             $this->boards->removeElement($board);
@@ -361,16 +361,16 @@ class Board
     public function toArray(): array
     {
         return [
-            'id'             => $this->id,
-            'forum'          => $this->forum,
-            'parent_board'   => $this->parent_board,
-            'title'          => $this->title,
-            'description'    => $this->description,
-            'type'           => $this->type,
+            'id' => $this->id,
+            'forum' => $this->forum,
+            'parent_board' => $this->parent_board,
+            'title' => $this->title,
+            'description' => $this->description,
+            'type' => $this->type,
             'last_post_user' => $this->last_post_user,
             'last_post_time' => $this->last_post_time,
-            'threads'        => $this->thread_count,
-            'posts'          => $this->post_count,
+            'threads' => $this->thread_count,
+            'posts' => $this->post_count,
         ];
     }
 }

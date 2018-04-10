@@ -14,27 +14,27 @@ class ForumController extends Controller
     {
         return [
             [
-                'type'   => 'group',
+                'type' => 'group',
                 'parent' => 'root',
-                'id'     => 'boards',
-                'title'  => 'Boards',
-                'icon'   => 'hs-admin-layers',
+                'id' => 'boards',
+                'title' => 'Boards',
+                'icon' => 'hs-admin-layers',
             ],
             [
-                'type'   => 'link',
+                'type' => 'link',
                 'parent' => 'boards',
-                'id'     => 'list',
-                'title'  => 'Manage Boards',
-                'href'   => 'board-list',
-                'view'   => 'ForumController::boardList',
+                'id' => 'list',
+                'title' => 'Manage Boards',
+                'href' => 'board-list',
+                'view' => 'ForumController::boardList',
             ],
             [
-                'type'   => 'link',
+                'type' => 'link',
                 'parent' => 'null',
-                'id'     => 'new_board',
-                'title'  => 'New Board',
-                'href'   => 'new-board',
-                'view'   => 'ForumController::newBoard',
+                'id' => 'new_board',
+                'title' => 'New Board',
+                'href' => 'new-board',
+                'view' => 'ForumController::newBoard',
             ],
         ];
     }
@@ -51,8 +51,8 @@ class ForumController extends Controller
         $boardList = $em->getRepository(Board::class)->findBy(['forum' => $forum, 'parent_board' => null]);
 
         return $this->render('theme_admin1/board-list.html.twig', [
-            'current_forum'    => $forum,
-            'board_list'       => $boardList,
+            'current_forum' => $forum,
+            'board_list' => $boardList,
             'navigation_links' => $navigation,
         ]);
     }
@@ -88,8 +88,8 @@ class ForumController extends Controller
 
         return $this->render('theme_admin1/new-board.html.twig', [
             'create_board_form' => $createBoardForm->createView(),
-            'current_forum'     => $forum,
-            'navigation_links'  => $navigation,
+            'current_forum' => $forum,
+            'navigation_links' => $navigation,
         ]);
     }
 }

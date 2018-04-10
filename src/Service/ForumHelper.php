@@ -22,7 +22,7 @@ class ForumHelper
     const DEFAULT_SHOW_THREAD_COUNT = 10;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectManager $em
+     * @var \Doctrine\Common\Persistence\ObjectManager
      */
     private $em;
 
@@ -32,7 +32,7 @@ class ForumHelper
     }
 
     /**
-     * Checks whether the given url exists, in other words, if the forum exists
+     * Checks whether the given url exists, in other words, if the forum exists.
      *
      * @param string $url
      *
@@ -43,16 +43,17 @@ class ForumHelper
         /** @var \App\Entity\Forum[] $find */
         $find = $this->em->getRepository(Forum::class)->findBy(['url' => $url]);
 
-        if (!is_null($find)) {
+        if (null !== $find) {
             if (count($find)) {
                 return true;
             }
         }
+
         return false;
     }
 
     /**
-     * Get a breadcrumb for the current tree
+     * Get a breadcrumb for the current tree.
      *
      * @param \App\Entity\Board $board
      *
@@ -63,7 +64,7 @@ class ForumHelper
         $boardsList = [];
         $parentBoard = $board->getParentBoard();
 
-        while (!is_null($parentBoard)) {
+        while (null !== $parentBoard) {
             $next = $parentBoard;
             array_unshift($boardsList, $next);
             $board = $next;
@@ -92,7 +93,7 @@ class ForumHelper
 
         foreach ($boardList as $currentBoard) {
             $line = '-';
-            for ($i = strlen($line) - 1; $i < $level; $i++) {
+            for ($i = mb_strlen($line) - 1; $i < $level; ++$i) {
                 $line .= '-';
             }
 

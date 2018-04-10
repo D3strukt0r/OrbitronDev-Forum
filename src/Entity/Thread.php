@@ -41,25 +41,25 @@ class Thread
 
     /**
      * @var int
-     * @ORM\Column(type="integer", options={"default":0})
+     * @ORM\Column(type="integer", options={"default": 0})
      */
     protected $views = 0;
 
     /**
      * @var int
-     * @ORM\Column(type="integer", options={"default":0})
+     * @ORM\Column(type="integer", options={"default": 0})
      */
     protected $replies = 0;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", options={"default":false})
+     * @ORM\Column(type="boolean", options={"default": false})
      */
     protected $sticky = false;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", options={"default":false})
+     * @ORM\Column(type="boolean", options={"default": false})
      */
     protected $closed = false;
 
@@ -342,15 +342,15 @@ class Thread
     public function toArray(): array
     {
         return [
-            'id'             => $this->id,
-            'user'           => $this->user,
-            'board'          => $this->board,
-            'topic'          => $this->topic,
-            'views'          => $this->views,
-            'replies'        => $this->replies,
-            'sticky'         => $this->sticky,
-            'closed'         => $this->closed,
-            'created_on'     => $this->created_on,
+            'id' => $this->id,
+            'user' => $this->user,
+            'board' => $this->board,
+            'topic' => $this->topic,
+            'views' => $this->views,
+            'replies' => $this->replies,
+            'sticky' => $this->sticky,
+            'closed' => $this->closed,
+            'created_on' => $this->created_on,
             'last_post_user' => $this->last_post_user,
             'last_post_time' => $this->last_post_time,
         ];

@@ -10,19 +10,19 @@ class CustomiseController extends Controller
     {
         return [
             [
-                'type'   => 'group',
+                'type' => 'group',
                 'parent' => 'root',
-                'id'     => 'customise',
-                'title'  => 'Customise',
-                'icon'   => 'hs-admin-brush-alt',
+                'id' => 'customise',
+                'title' => 'Customise',
+                'icon' => 'hs-admin-brush-alt',
             ],
             [
-                'type'   => 'link',
+                'type' => 'link',
                 'parent' => 'customise',
-                'id'     => 'theme',
-                'title'  => 'Themes',
-                'href'   => 'customise-theme',
-                'view'   => 'CustomiseController::customiseTheme',
+                'id' => 'theme',
+                'title' => 'Themes',
+                'href' => 'customise-theme',
+                'view' => 'CustomiseController::customiseTheme',
             ],
         ];
     }
@@ -36,7 +36,7 @@ class CustomiseController extends Controller
     {
         return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
             'navigation' => $navigation,
-            'forum'      => $forum,
+            'forum' => $forum,
         ]);
     }
 }
