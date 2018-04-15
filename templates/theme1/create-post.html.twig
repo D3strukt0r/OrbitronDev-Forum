@@ -27,13 +27,13 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="https://cdn.wysibb.com/css/default/wbbtheme.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/wbb/wysibb@1/theme/default/wbbtheme.min.css" />
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/3.0.1/jquery-migrate.min.js"></script>
-    <script src="https://cdn.wysibb.com/js/jquery.wysibb.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-migrate@3/dist/jquery-migrate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/wbb/wysibb@1/jquery.wysibb.min.js"></script>
     <script>
         $(document).ready(function() {
             $("#post_message").wysibb({

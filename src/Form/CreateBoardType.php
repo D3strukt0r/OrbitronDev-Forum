@@ -28,13 +28,14 @@ class CreateBoardType extends AbstractType
                 'choices' => $options['board_list'],
                 'expanded' => false, // select tag
                 'multiple' => false,
+                'choice_translation_domain' => false,
             ])
             ->add('type', ChoiceType::class, [
                 'label' => 'admin.form.create_board.type.label',
                 'required' => false,
                 'choices' => [
-                    'Board' => 1,
-                    'Category' => 2,
+                    'admin.form.create_board.type.options.board' => 1,
+                    'admin.form.create_board.type.options.category' => 2,
                 ],
                 'placeholder' => false,
                 'expanded' => true, // radio buttons
