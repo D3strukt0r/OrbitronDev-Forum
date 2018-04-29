@@ -72,7 +72,7 @@
                                     <p class="text-center"><a href="{{ path('user', {'username': post.user.username}) }}">{{ post.user.username }}</a></p>
                                     <div class="text-center mb-3">
                                         <a href="{{ path('user', {'username': post.user.username}) }}">
-                                            <img src="http://account.localhost/api/get_img?user_id={{ post.user.id }}&height=200&width=200" class="img-fluid rounded" alt="">
+                                            <img src="{{ getenv('OAUTH_URL') }}/api/get_img?user_id={{ post.user.id }}&height=200&width=200" class="img-fluid rounded" alt="">
                                         </a>
                                     </div>
                                     {% if app.user is not empty and app.user.id == post.user.id %}

@@ -88,7 +88,7 @@ class ForumHelper
         $boardList = $this->em->getRepository(Board::class)->findBy(['forum' => $forum, 'parent_board' => $board]);
 
         if (empty($list)) {
-            $list['- Main (ID: 0)'] = 0;
+            $list['- Root (ID: 0)'] = 0;
         }
 
         foreach ($boardList as $currentBoard) {
