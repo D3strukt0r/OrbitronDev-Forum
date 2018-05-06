@@ -43,10 +43,8 @@ class ForumHelper
         /** @var \App\Entity\Forum[] $find */
         $find = $this->em->getRepository(Forum::class)->findBy(['url' => $url]);
 
-        if (null !== $find) {
-            if (count($find)) {
-                return true;
-            }
+        if (count($find)) {
+            return true;
         }
 
         return false;
@@ -103,7 +101,7 @@ class ForumHelper
             // Has sub-boards
             if (count($currentBoard->getBoards())) {
                 $nextLevel = $level + 1;
-                self::listBoardsFormSelect($forum, $currentBoard, $nextLevel, $list);
+                $this->listBoardsFormSelect($forum, $currentBoard, $nextLevel, $list);
             }
         }
 

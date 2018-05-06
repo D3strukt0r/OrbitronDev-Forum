@@ -50,7 +50,7 @@ class UsersController extends Controller
 
     public function ban($navigation, $forum)
     {
-        return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
+        return $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
             'navigation' => $navigation,
             'forum' => $forum,
         ]);
@@ -58,7 +58,7 @@ class UsersController extends Controller
 
     public function rank($navigation, $forum)
     {
-        return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
+        return $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
             'navigation' => $navigation,
             'forum' => $forum,
         ]);
@@ -66,7 +66,7 @@ class UsersController extends Controller
 
     public function groups($navigation, $forum)
     {
-        return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
+        return $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
             'navigation' => $navigation,
             'forum' => $forum,
         ]);

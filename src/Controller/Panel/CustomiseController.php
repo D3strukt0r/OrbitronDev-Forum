@@ -34,7 +34,7 @@ class CustomiseController extends Controller
 
     public function customiseTheme($navigation, $forum)
     {
-        return $response = $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
+        return $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
             'navigation' => $navigation,
             'forum' => $forum,
         ]);
