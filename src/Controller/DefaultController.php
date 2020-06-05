@@ -6,34 +6,58 @@ use App\Entity\Board;
 use App\Entity\Forum;
 use App\Entity\Post;
 use App\Entity\Thread;
+use App\Entity\User;
 use App\Form\NewForumType;
 use App\Form\PostType;
 use App\Form\ThreadType;
 use App\Service\AdminControlPanel;
 use App\Service\ForumHelper;
-use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use DateTime;
+use Exception;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
-    public function index(ObjectManager $em)
+    /**
+     * @Route("/", name="index")
+     *
+     * @return Response
+     */
+    public function index()
     {
-        /** @var \App\Entity\Forum[] $forumList */
+        $em = $this->getDoctrine()->getManager();
+        /** @var Forum[] $forumList */
         $forumList = $em->getRepository(Forum::class)->findAll();
 
-        return $this->render('list-forums.html.twig', [
-            'forums_list' => $forumList,
-        ]);
+        return $this->render(
+            'list-forums.html.twig',
+            [
+                'forums_list' => $forumList,
+            ]
+        );
     }
 
-    public function newForum(ObjectManager $em, Request $request, TranslatorInterface $translator)
+    /**
+     * @Route("/new-forum", name="new")
+     *
+     * @param Request             $request    The request
+     * @param TranslatorInterface $translator The translator
+     *
+     * @return RedirectResponse|Response
+     */
+    public function newForum(Request $request, TranslatorInterface $translator)
     {
         //////////// TEST IF USER IS LOGGED IN ////////////
-        /** @var \App\Entity\User|null $user */
+        /** @var User|null $user */
         $user = $this->getUser();
         if (!$user instanceof UserInterface) {
             throw $this->createAccessDeniedException();
@@ -52,25 +76,46 @@ class DefaultController extends Controller
                     ->setName($formData['name'])
                     ->setUrl($formData['url'])
                     ->setOwner($user)
-                    ->setCreated(new \DateTime());
+                    ->setCreated(new DateTime())
+                ;
+                $em = $this->getDoctrine()->getManager();
                 $em->persist($newForum);
                 $em->flush();
 
                 return $this->redirectToRoute('forum_index', ['forum' => $newForum->getUrl()]);
-            } catch (\Exception $e) {
-                $createForumForm->addError(new FormError($translator->trans('new_forum.not_created', ['%error_message%' => $e->getMessage()], 'validators')));
+            } catch (Exception $e) {
+                $createForumForm->addError(
+                    new FormError(
+                        $translator->trans(
+                            'new_forum.not_created',
+                            ['%error_message%' => $e->getMessage()],
+                            'validators'
+                        )
+                    )
+                );
             }
         }
 
-        return $this->render('create-new-forum.html.twig', [
-            'create_forum_form' => $createForumForm->createView(),
-        ]);
+        return $this->render(
+            'create-new-forum.html.twig',
+            [
+                'create_forum_form' => $createForumForm->createView(),
+            ]
+        );
     }
 
-    public function forumIndex(ObjectManager $em, $forum)
+    /**
+     * @Route("/{forum}", name="forum_index")
+     *
+     * @param string $forum The forum
+     *
+     * @return Response
+     */
+    public function forumIndex(string $forum)
     {
         //////////// TEST IF FORUM EXISTS ////////////
-        /** @var \App\Entity\Forum|null $forum */
+        $em = $this->getDoctrine()->getManager();
+        /** @var Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
         if (null === $forum) {
             throw $this->createNotFoundException();
@@ -78,19 +123,33 @@ class DefaultController extends Controller
         //////////// END TEST IF FORUM EXISTS ////////////
 
         // Get all boards
-        /** @var \App\Entity\Board[] $boardTree */
+        /** @var Board[] $boardTree */
         $boardTree = $em->getRepository(Board::class)->findBy(['forum' => $forum, 'parent_board' => null]);
 
-        return $this->render('theme1/index.html.twig', [
-            'current_forum' => $forum,
-            'board_tree' => $boardTree,
-        ]);
+        return $this->render(
+            'theme1/index.html.twig',
+            [
+                'current_forum' => $forum,
+                'board_tree' => $boardTree,
+            ]
+        );
     }
 
-    public function forumBoard(ObjectManager $em, Request $request, ForumHelper $helper, $forum, $board)
+    /**
+     * @Route("/{forum}/board/{board}", name="forum_board")
+     *
+     * @param Request     $request The request
+     * @param ForumHelper $helper  The forum helper
+     * @param string      $forum   The forum
+     * @param string      $board   The board
+     *
+     * @return Response
+     */
+    public function forumBoard(Request $request, ForumHelper $helper, string $forum, string $board)
     {
         //////////// TEST IF FORUM EXISTS ////////////
-        /** @var \App\Entity\Forum|null $forum */
+        $em = $this->getDoctrine()->getManager();
+        /** @var Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
         if (null === $forum) {
             throw $this->createNotFoundException();
@@ -98,7 +157,7 @@ class DefaultController extends Controller
         //////////// END TEST IF FORUM EXISTS ////////////
 
         //////////// TEST IF BOARD EXISTS ////////////
-        /** @var \App\Entity\Board|null $board */
+        /** @var Board|null $board */
         $board = $em->getRepository(Board::class)->findOneBy(['id' => $board]);
         if (null === $board) {
             throw $this->createNotFoundException();
@@ -116,17 +175,18 @@ class DefaultController extends Controller
         $pagination['item_limit'] = $request->query->getInt('show', ForumHelper::DEFAULT_SHOW_THREAD_COUNT);
         $pagination['current_page'] = $request->query->getInt('page', 1);
 
-        /** @var \App\Entity\Thread[] $threads */
+        /** @var Thread[] $threads */
         $threads = $em->getRepository(Thread::class)->findBy(
             ['board' => $board],
             ['last_post_time' => 'DESC'],
             $pagination['item_limit'],
             ($pagination['current_page'] - 1) * $pagination['item_limit']
-        );
+        )
+        ;
 
         // Pagination
         // Reference: http://www.strangerstudios.com/sandbox/pagination/diggstyle.php
-        /** @var \App\Entity\Thread[] $threadCount */
+        /** @var Thread[] $threadCount */
         $threadCount = $em->getRepository(Thread::class)->findBy(['board' => $board]);
         $pagination['total_items'] = count($threadCount);
         $pagination['adjacents'] = 1;
@@ -136,20 +196,34 @@ class DefaultController extends Controller
         $pagination['pages_count'] = ceil($pagination['total_items'] / $pagination['item_limit']);
         $pagination['last_page_m1'] = $pagination['pages_count'] - 1;
 
-        return $this->render('theme1/board.html.twig', [
-            'current_forum' => $forum,
-            'current_board' => $board,
-            'breadcrumb' => $breadcrumb,
-            'board_tree' => $boardTree,
-            'threads' => $threads,
-            'pagination' => $pagination,
-        ]);
+        return $this->render(
+            'theme1/board.html.twig',
+            [
+                'current_forum' => $forum,
+                'current_board' => $board,
+                'breadcrumb' => $breadcrumb,
+                'board_tree' => $boardTree,
+                'threads' => $threads,
+                'pagination' => $pagination,
+            ]
+        );
     }
 
-    public function forumThread(ObjectManager $em, Request $request, ForumHelper $helper, $forum, $thread)
+    /**
+     * @Route("/{forum}/thread/{thread}", name="forum_thread")
+     *
+     * @param Request     $request The request
+     * @param ForumHelper $helper  The forum helper
+     * @param string      $forum   The forum
+     * @param string      $thread  The thread
+     *
+     * @return Response
+     */
+    public function forumThread(Request $request, ForumHelper $helper, string $forum, string $thread)
     {
         //////////// TEST IF FORUM EXISTS ////////////
-        /** @var \App\Entity\Forum|null $forum */
+        $em = $this->getDoctrine()->getManager();
+        /** @var Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
         if (null === $forum) {
             throw $this->createNotFoundException();
@@ -157,7 +231,7 @@ class DefaultController extends Controller
         //////////// END TEST IF FORUM EXISTS ////////////
 
         //////////// TEST IF THREAD EXISTS ////////////
-        /** @var \App\Entity\Thread|null $thread */
+        /** @var Thread|null $thread */
         $thread = $em->getRepository(Thread::class)->findOneBy(['id' => $thread]);
         if (null === $thread) {
             throw $this->createNotFoundException();
@@ -176,16 +250,17 @@ class DefaultController extends Controller
         $pagination['item_limit'] = $request->query->getInt('show', ForumHelper::DEFAULT_SHOW_THREAD_COUNT);
         $pagination['current_page'] = $request->query->getInt('page', 1);
 
-        /** @var \App\Entity\Post[] $posts */
+        /** @var Post[] $posts */
         $posts = $em->getRepository(Post::class)->findBy(
             ['thread' => $thread],
             ['post_number' => 'ASC'],
             $pagination['item_limit'],
             ($pagination['current_page'] - 1) * $pagination['item_limit']
-        );
+        )
+        ;
 
         // Pagination
-        /** @var \App\Entity\Post[] $postCount */
+        /** @var Post[] $postCount */
         $postCount = $em->getRepository(Post::class)->findBy(['thread' => $thread]);
         $pagination['total_items'] = count($postCount);
         $pagination['adjacents'] = 1;
@@ -195,20 +270,33 @@ class DefaultController extends Controller
         $pagination['pages_count'] = ceil($pagination['total_items'] / $pagination['item_limit']);
         $pagination['last_page_m1'] = $pagination['pages_count'] - 1;
 
-        return $this->render('theme1/thread.html.twig', [
-            'current_forum' => $forum,
-            'current_board' => $board,
-            'current_thread' => $thread,
-            'posts' => $posts,
-            'breadcrumb' => $breadcrumb,
-            'pagination' => $pagination,
-        ]);
+        return $this->render(
+            'theme1/thread.html.twig',
+            [
+                'current_forum' => $forum,
+                'current_board' => $board,
+                'current_thread' => $thread,
+                'posts' => $posts,
+                'breadcrumb' => $breadcrumb,
+                'pagination' => $pagination,
+            ]
+        );
     }
 
-    public function forumCreatePost(ObjectManager $em, Request $request, ForumHelper $helper, $forum, $thread)
+    /**
+     * @Route("/{forum}/thread/{thread}/create-post", name="forum_create_post")
+     *
+     * @param Request     $request The request
+     * @param ForumHelper $helper  The forum helper
+     * @param string      $forum   The forum
+     * @param string      $thread  The thread
+     *
+     * @return Response
+     */
+    public function forumCreatePost(Request $request, ForumHelper $helper, string $forum, string $thread)
     {
         //////////// TEST IF USER IS LOGGED IN ////////////
-        /** @var \App\Entity\User|null $user */
+        /** @var User|null $user */
         $user = $this->getUser();
         if (!$user instanceof UserInterface) {
             throw $this->createAccessDeniedException();
@@ -216,7 +304,8 @@ class DefaultController extends Controller
         //////////// END TEST IF USER IS LOGGED IN ////////////
 
         //////////// TEST IF FORUM EXISTS ////////////
-        /** @var \App\Entity\Forum|null $forum */
+        $em = $this->getDoctrine()->getManager();
+        /** @var Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
         if (null === $forum) {
             throw $this->createNotFoundException();
@@ -224,7 +313,7 @@ class DefaultController extends Controller
         //////////// END TEST IF FORUM EXISTS ////////////
 
         //////////// TEST IF THREAD EXISTS ////////////
-        /** @var \App\Entity\Thread|null $thread */
+        /** @var Thread|null $thread */
         $thread = $em->getRepository(Thread::class)->findOneBy(['id' => $thread]);
         if (null === $thread) {
             throw $this->createNotFoundException();
@@ -243,7 +332,7 @@ class DefaultController extends Controller
             $formData = $createPostForm->getData();
 
             try {
-                $time = new \DateTime();
+                $time = new DateTime();
 
                 // Add post entity
                 $newPost = new Post();
@@ -253,7 +342,8 @@ class DefaultController extends Controller
                     ->setPostNumber($thread->getReplies() + 2)
                     ->setSubject($formData['title'])
                     ->setMessage($formData['message'])
-                    ->setCreatedOn($time);
+                    ->setCreatedOn($time)
+                ;
                 $em->persist($newPost);
 
                 // Update thread count and last post user and time
@@ -273,24 +363,37 @@ class DefaultController extends Controller
                 $em->flush();
 
                 $this->addFlash('post_created', '');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->addFlash('post_not_created', '');
             }
         }
 
-        return $this->render('theme1/create-post.html.twig', [
-            'current_forum' => $forum,
-            'current_board' => $board,
-            'current_thread' => $thread,
-            'breadcrumb' => $breadcrumb,
-            'create_post_form' => $createPostForm->createView(),
-        ]);
+        return $this->render(
+            'theme1/create-post.html.twig',
+            [
+                'current_forum' => $forum,
+                'current_board' => $board,
+                'current_thread' => $thread,
+                'breadcrumb' => $breadcrumb,
+                'create_post_form' => $createPostForm->createView(),
+            ]
+        );
     }
 
-    public function forumCreateThread(ObjectManager $em, Request $request, ForumHelper $helper, $forum, $board)
+    /**
+     * @Route("/{forum}/board/{board}/create-thread", name="forum_create_thread")
+     *
+     * @param Request     $request The request
+     * @param ForumHelper $helper  The forum helper
+     * @param string      $forum   The forum
+     * @param string      $board   The board
+     *
+     * @return Response
+     */
+    public function forumCreateThread(Request $request, ForumHelper $helper, string $forum, string $board)
     {
         //////////// TEST IF USER IS LOGGED IN ////////////
-        /** @var \App\Entity\User|null $user */
+        /** @var User|null $user */
         $user = $this->getUser();
         if (!$user instanceof UserInterface) {
             throw $this->createAccessDeniedException();
@@ -298,7 +401,8 @@ class DefaultController extends Controller
         //////////// END TEST IF USER IS LOGGED IN ////////////
 
         //////////// TEST IF FORUM EXISTS ////////////
-        /** @var \App\Entity\Forum|null $forum */
+        $em = $this->getDoctrine()->getManager();
+        /** @var Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
         if (null === $forum) {
             throw $this->createNotFoundException();
@@ -306,7 +410,7 @@ class DefaultController extends Controller
         //////////// END TEST IF FORUM EXISTS ////////////
 
         //////////// TEST IF BOARD EXISTS ////////////
-        /** @var \App\Entity\Board|null $board */
+        /** @var Board|null $board */
         $board = $em->getRepository(Board::class)->findOneBy(['id' => $board]);
         if (null === $board) {
             throw $this->createNotFoundException();
@@ -324,7 +428,7 @@ class DefaultController extends Controller
 
             try {
                 // Add thread and post entity
-                $time = new \DateTime();
+                $time = new DateTime();
                 $newThread = new Thread();
                 $newThread
                     ->setUser($user)
@@ -332,14 +436,16 @@ class DefaultController extends Controller
                     ->setTopic($formData['title'])
                     ->setCreatedOn($time)
                     ->setLastPostUser($user)
-                    ->setLastPostTime($time);
+                    ->setLastPostTime($time)
+                ;
                 $newPost = new Post();
                 $newPost
                     ->setUser($user)
                     ->setPostNumber(1)
                     ->setSubject($formData['title'])
                     ->setMessage($formData['message'])
-                    ->setCreatedOn($time);
+                    ->setCreatedOn($time)
+                ;
                 $newThread->addPost($newPost);
                 $em->persist($newThread);
                 $em->persist($newPost);
@@ -358,30 +464,52 @@ class DefaultController extends Controller
 
                 $this->addFlash('thread_created', '');
 
-                return $this->render('theme1/create-thread.html.twig', [
-                    'current_forum' => $forum,
-                    'current_board' => $board,
-                    'breadcrumb' => $breadcrumb,
-                    'new_thread_id' => $newThread->getId(),
-                    'create_thread_form' => $createThreadForm->createView(),
-                ]);
-            } catch (\Exception $e) {
+                return $this->render(
+                    'theme1/create-thread.html.twig',
+                    [
+                        'current_forum' => $forum,
+                        'current_board' => $board,
+                        'breadcrumb' => $breadcrumb,
+                        'new_thread_id' => $newThread->getId(),
+                        'create_thread_form' => $createThreadForm->createView(),
+                    ]
+                );
+            } catch (Exception $e) {
                 $this->addFlash('thread_not_created', '');
             }
         }
 
-        return $this->render('theme1/create-thread.html.twig', [
-            'current_forum' => $forum,
-            'current_board' => $board,
-            'breadcrumb' => $breadcrumb,
-            'create_thread_form' => $createThreadForm->createView(),
-        ]);
+        return $this->render(
+            'theme1/create-thread.html.twig',
+            [
+                'current_forum' => $forum,
+                'current_board' => $board,
+                'breadcrumb' => $breadcrumb,
+                'create_thread_form' => $createThreadForm->createView(),
+            ]
+        );
     }
 
-    public function forumAdmin(ObjectManager $em, Request $request, $forum, $page)
-    {
+    /**
+     * @Route("/{forum}/admin/{page}", name="forum_admin")
+     *
+     * @param KernelInterface       $kernel       The kernel
+     * @param TokenStorageInterface $tokenStorage The token storage
+     * @param Request               $request      The request
+     * @param string                $forum        The forum
+     * @param string                $page         The page
+     *
+     * @return Response
+     */
+    public function forumAdmin(
+        KernelInterface $kernel,
+        TokenStorageInterface $tokenStorage,
+        Request $request,
+        string $forum,
+        string $page
+    ) {
         //////////// TEST IF USER IS LOGGED IN ////////////
-        /** @var \App\Entity\User|null $user */
+        /** @var User|null $user */
         $user = $this->getUser();
         if (!$user instanceof UserInterface) {
             throw $this->createAccessDeniedException();
@@ -389,7 +517,8 @@ class DefaultController extends Controller
         //////////// END TEST IF USER IS LOGGED IN ////////////
 
         //////////// TEST IF FORUM EXISTS ////////////
-        /** @var \App\Entity\Forum|null $forum */
+        $em = $this->getDoctrine()->getManager();
+        /** @var Forum|null $forum */
         $forum = $em->getRepository(Forum::class)->findOneBy(['url' => $forum]);
         if (null === $forum) {
             throw $this->createNotFoundException();
@@ -400,7 +529,7 @@ class DefaultController extends Controller
             throw $this->createAccessDeniedException();
         }
 
-        AdminControlPanel::loadLibs($this->get('kernel')->getProjectDir(), $this->container);
+        AdminControlPanel::loadLibs($kernel->getProjectDir(), $tokenStorage);
 
         $navigationLinks = AdminControlPanel::getTree();
 
@@ -421,12 +550,14 @@ class DefaultController extends Controller
                 $view = $list[$key]['view'];
             }
         }
-        $response = $this->forward('App\\Controller\\Panel\\'.$view, [
-            'navigation' => $navigationLinks,
-            'request' => $request,
-            'forum' => $forum,
-        ]);
 
-        return $response;
+        return $this->forward(
+            'App\\Controller\\Panel\\'.$view,
+            [
+                'navigation' => $navigationLinks,
+                'request' => $request,
+                'forum' => $forum,
+            ]
+        );
     }
 }

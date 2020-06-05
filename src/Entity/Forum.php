@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,7 +34,7 @@ class Forum
     protected $url;
 
     /**
-     * @var \App\Entity\User
+     * @var User
      * @ORM\ManyToOne(targetEntity="\App\Entity\User")
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", nullable=false)
      */
@@ -51,7 +53,7 @@ class Forum
     protected $closed_message;
 
     /**
-     * @var null|array
+     * @var array|null
      * @ORM\Column(type="array", nullable=true)
      */
     protected $keywords;
@@ -93,13 +95,13 @@ class Forum
     protected $copyright;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      * @ORM\Column(type="datetime")
      */
     protected $created;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      * @ORM\OneToMany(targetEntity="Board", mappedBy="forum", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     protected $boards;
@@ -110,7 +112,7 @@ class Forum
     }
 
     /**
-     * @return int
+     * @return int The ID
      */
     public function getId(): int
     {
@@ -118,7 +120,7 @@ class Forum
     }
 
     /**
-     * @return string
+     * @return string The name
      */
     public function getName(): string
     {
@@ -126,7 +128,7 @@ class Forum
     }
 
     /**
-     * @param string $name
+     * @param string $name The name
      *
      * @return $this
      */
@@ -138,7 +140,7 @@ class Forum
     }
 
     /**
-     * @return string
+     * @return string The url
      */
     public function getUrl(): string
     {
@@ -146,7 +148,7 @@ class Forum
     }
 
     /**
-     * @param string $url
+     * @param string $url The url
      *
      * @return $this
      */
@@ -158,7 +160,7 @@ class Forum
     }
 
     /**
-     * @return \App\Entity\User
+     * @return User The owner
      */
     public function getOwner(): User
     {
@@ -166,7 +168,7 @@ class Forum
     }
 
     /**
-     * @param \App\Entity\User $owner
+     * @param User $owner The owner
      *
      * @return $this
      */
@@ -178,7 +180,7 @@ class Forum
     }
 
     /**
-     * @return bool
+     * @return bool Whether the forum is closed
      */
     public function isClosed(): bool
     {
@@ -186,7 +188,7 @@ class Forum
     }
 
     /**
-     * @param bool $closed
+     * @param bool $closed Whether the forum is closed
      *
      * @return $this
      */
@@ -198,7 +200,7 @@ class Forum
     }
 
     /**
-     * @return string|null
+     * @return string|null The message why the forum was closed
      */
     public function getClosedMessage(): ?string
     {
@@ -206,7 +208,7 @@ class Forum
     }
 
     /**
-     * @param string|null $closed_message
+     * @param string|null $closed_message The message why the forum was closed
      *
      * @return $this
      */
@@ -218,7 +220,7 @@ class Forum
     }
 
     /**
-     * @return null|array
+     * @return array|null The keywords
      */
     public function getKeywords(): ?array
     {
@@ -226,7 +228,7 @@ class Forum
     }
 
     /**
-     * @param string $keyword
+     * @param string $keyword The keyword
      *
      * @return $this
      */
@@ -244,7 +246,7 @@ class Forum
     }
 
     /**
-     * @param string $keyword
+     * @param string $keyword The keyword
      *
      * @return $this
      */
@@ -264,7 +266,7 @@ class Forum
     }
 
     /**
-     * @return string|null
+     * @return string|null The description
      */
     public function getDescription(): ?string
     {
@@ -272,7 +274,7 @@ class Forum
     }
 
     /**
-     * @param string|null $description
+     * @param string|null $description The description
      *
      * @return $this
      */
@@ -284,7 +286,7 @@ class Forum
     }
 
     /**
-     * @return string|null
+     * @return string|null The Google Analytics ID
      */
     public function getGoogleAnalyticsId(): ?string
     {
@@ -292,7 +294,7 @@ class Forum
     }
 
     /**
-     * @param string|null $id
+     * @param string|null $id The Google Analytics ID
      *
      * @return $this
      */
@@ -304,7 +306,7 @@ class Forum
     }
 
     /**
-     * @return string|null
+     * @return string|null The Google Web Developer ID
      */
     public function getGoogleWebDeveloper(): ?string
     {
@@ -312,7 +314,7 @@ class Forum
     }
 
     /**
-     * @param string|null $google_web_dev
+     * @param string|null $google_web_dev The Google Web Developer ID
      *
      * @return $this
      */
@@ -324,7 +326,7 @@ class Forum
     }
 
     /**
-     * @return array|null
+     * @return array|null The links
      */
     public function getLinks(): ?array
     {
@@ -332,7 +334,7 @@ class Forum
     }
 
     /**
-     * @param array|null $links
+     * @param array|null $links The links
      *
      * @return $this
      */
@@ -344,7 +346,7 @@ class Forum
     }
 
     /**
-     * @return string|null
+     * @return string|null The language
      */
     public function getLanguage(): ?string
     {
@@ -352,7 +354,7 @@ class Forum
     }
 
     /**
-     * @param string|null $language
+     * @param string|null $language The language
      *
      * @return $this
      */
@@ -364,7 +366,7 @@ class Forum
     }
 
     /**
-     * @return string|null
+     * @return string|null The copyright notice
      */
     public function getCopyright(): ?string
     {
@@ -372,7 +374,7 @@ class Forum
     }
 
     /**
-     * @param string|null $copyright
+     * @param string|null $copyright The copyright notice
      *
      * @return $this
      */
@@ -384,19 +386,19 @@ class Forum
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime The creation date
      */
-    public function getCreated(): \DateTime
+    public function getCreated(): DateTime
     {
         return $this->created;
     }
 
     /**
-     * @param \DateTime $created
+     * @param DateTime $created The creation date
      *
      * @return $this
      */
-    public function setCreated(\DateTime $created): self
+    public function setCreated(DateTime $created): self
     {
         $this->created = $created;
 
@@ -404,7 +406,7 @@ class Forum
     }
 
     /**
-     * @return \App\Entity\Board[]
+     * @return Board[] The boards
      */
     public function getBoards(): array
     {
@@ -412,7 +414,7 @@ class Forum
     }
 
     /**
-     * @param \App\Entity\Board $board
+     * @param Board $board The board
      *
      * @return $this
      */
@@ -425,7 +427,7 @@ class Forum
     }
 
     /**
-     * @param \App\Entity\Board $board
+     * @param Board $board The boards
      *
      * @return $this
      */
@@ -439,7 +441,7 @@ class Forum
     }
 
     /**
-     * @return array
+     * @return array An array of all the properties of an object
      */
     public function toArray(): array
     {

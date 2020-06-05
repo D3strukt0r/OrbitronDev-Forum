@@ -2,9 +2,10 @@
 
 namespace App\Controller\Panel;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Entity\Forum;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class UsersController extends Controller
+class UsersController extends AbstractController
 {
     public static function __setupNavigation()
     {
@@ -48,27 +49,36 @@ class UsersController extends Controller
         return 30;
     }
 
-    public function ban($navigation, $forum)
+    public function ban($navigation, Forum $forum)
     {
-        return $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
-            'navigation' => $navigation,
-            'forum' => $forum,
-        ]);
+        return $this->forward(
+            'App\\Controller\\Panel\\DefaultController::notFound',
+            [
+                'navigation' => $navigation,
+                'forum' => $forum,
+            ]
+        );
     }
 
-    public function rank($navigation, $forum)
+    public function rank($navigation, Forum $forum)
     {
-        return $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
-            'navigation' => $navigation,
-            'forum' => $forum,
-        ]);
+        return $this->forward(
+            'App\\Controller\\Panel\\DefaultController::notFound',
+            [
+                'navigation' => $navigation,
+                'forum' => $forum,
+            ]
+        );
     }
 
-    public function groups($navigation, $forum)
+    public function groups($navigation, Forum $forum)
     {
-        return $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
-            'navigation' => $navigation,
-            'forum' => $forum,
-        ]);
+        return $this->forward(
+            'App\\Controller\\Panel\\DefaultController::notFound',
+            [
+                'navigation' => $navigation,
+                'forum' => $forum,
+            ]
+        );
     }
 }

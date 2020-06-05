@@ -15,24 +15,37 @@ class PostType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, [
-                'label' => 'service_create_post.form.title.label',
-                'attr' => [
-                    'placeholder' => 'service_create_post.form.title.placeholder',
-                ],
-                'data' => 'RE: '.$options['topic'],
-                'constraints' => [
-                    new NotBlank(['message' => 'new_post.title.not_blank']),
-                ],
-            ])
-            ->add('message', TextareaType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'new_post.message.not_blank']),
-                ],
-            ])
-            ->add('send', SubmitType::class, [
-                'label' => 'service_create_post.form.send.label',
-            ]);
+            ->add(
+                'title',
+                TextType::class,
+                [
+                    'label' => 'service_create_post.form.title.label',
+                    'attr' => [
+                        'placeholder' => 'service_create_post.form.title.placeholder',
+                    ],
+                    'data' => 'RE: '.$options['topic'],
+                    'constraints' => [
+                        new NotBlank(['message' => 'new_post.title.not_blank']),
+                    ],
+                ]
+            )
+            ->add(
+                'message',
+                TextareaType::class,
+                [
+                    'constraints' => [
+                        new NotBlank(['message' => 'new_post.message.not_blank']),
+                    ],
+                ]
+            )
+            ->add(
+                'send',
+                SubmitType::class,
+                [
+                    'label' => 'service_create_post.form.send.label',
+                ]
+            )
+        ;
     }
 
     /**
@@ -40,8 +53,10 @@ class PostType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'topic' => '',
-        ]);
+        $resolver->setDefaults(
+            [
+                'topic' => '',
+            ]
+        );
     }
 }

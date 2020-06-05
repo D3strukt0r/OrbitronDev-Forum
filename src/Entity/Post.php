@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Decoda\Decoda;
 use Decoda\Hook\EmoticonHook;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,7 +22,7 @@ class Post
     protected $id;
 
     /**
-     * @var \App\Entity\Thread
+     * @var Thread
      * @ORM\ManyToOne(targetEntity="Thread", inversedBy="posts")
      * @ORM\JoinColumn(name="thread_id", referencedColumnName="id", nullable=false)
      */
@@ -34,7 +35,7 @@ class Post
     protected $post_number;
 
     /**
-     * @var \App\Entity\User
+     * @var User
      * @ORM\ManyToOne(targetEntity="\App\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      */
@@ -53,13 +54,13 @@ class Post
     protected $message;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      * @ORM\Column(type="datetime")
      */
     protected $created_on;
 
     /**
-     * @return int
+     * @return int The ID
      */
     public function getId(): int
     {
@@ -67,7 +68,7 @@ class Post
     }
 
     /**
-     * @return \App\Entity\Thread
+     * @return Thread The thread
      */
     public function getThread(): Thread
     {
@@ -75,7 +76,7 @@ class Post
     }
 
     /**
-     * @param \App\Entity\Thread $thread
+     * @param Thread $thread The thread
      *
      * @return $this
      */
@@ -87,7 +88,7 @@ class Post
     }
 
     /**
-     * @return int
+     * @return int The number of posts
      */
     public function getPostNumber(): int
     {
@@ -95,7 +96,7 @@ class Post
     }
 
     /**
-     * @param int $post_number
+     * @param int $post_number The number of posts
      *
      * @return $this
      */
@@ -107,7 +108,7 @@ class Post
     }
 
     /**
-     * @return \App\Entity\User
+     * @return User The user
      */
     public function getUser(): User
     {
@@ -115,7 +116,7 @@ class Post
     }
 
     /**
-     * @param \App\Entity\User $user
+     * @param User $user The user
      *
      * @return $this
      */
@@ -127,7 +128,7 @@ class Post
     }
 
     /**
-     * @return string
+     * @return string The subject
      */
     public function getSubject(): string
     {
@@ -135,7 +136,7 @@ class Post
     }
 
     /**
-     * @param string $subject
+     * @param string $subject The subject
      *
      * @return $this
      */
@@ -147,7 +148,7 @@ class Post
     }
 
     /**
-     * @return string
+     * @return string The message
      */
     public function getMessage(): string
     {
@@ -155,7 +156,7 @@ class Post
     }
 
     /**
-     * @return string
+     * @return string The formatted message
      */
     public function getFormattedMessage(): string
     {
@@ -167,7 +168,7 @@ class Post
     }
 
     /**
-     * @param string $message
+     * @param string $message The message
      *
      * @return $this
      */
@@ -179,19 +180,19 @@ class Post
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime The date when the post was created
      */
-    public function getCreatedOn(): \DateTime
+    public function getCreatedOn(): DateTime
     {
         return $this->created_on;
     }
 
     /**
-     * @param \DateTime $created_on
+     * @param DateTime $created_on The date when the post was created
      *
      * @return $this
      */
-    public function setCreatedOn(\DateTime $created_on): self
+    public function setCreatedOn(DateTime $created_on): self
     {
         $this->created_on = $created_on;
 
@@ -199,7 +200,7 @@ class Post
     }
 
     /**
-     * @return array
+     * @return array An array of all the properties of an object
      */
     public function toArray(): array
     {

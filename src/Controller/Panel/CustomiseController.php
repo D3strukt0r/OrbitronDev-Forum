@@ -2,9 +2,10 @@
 
 namespace App\Controller\Panel;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Entity\Forum;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class CustomiseController extends Controller
+class CustomiseController extends AbstractController
 {
     public static function __setupNavigation()
     {
@@ -32,11 +33,14 @@ class CustomiseController extends Controller
         return 40;
     }
 
-    public function customiseTheme($navigation, $forum)
+    public function customiseTheme($navigation, Forum $forum)
     {
-        return $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
-            'navigation' => $navigation,
-            'forum' => $forum,
-        ]);
+        return $this->forward(
+            'App\\Controller\\Panel\\DefaultController::notFound',
+            [
+                'navigation' => $navigation,
+                'forum' => $forum,
+            ]
+        );
     }
 }

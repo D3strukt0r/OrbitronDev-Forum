@@ -3,12 +3,13 @@
 namespace App\Controller\Panel;
 
 use App\Entity\Board;
+use App\Entity\Forum;
 use App\Form\CreateBoardType;
 use App\Service\ForumHelper;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
-class ForumController extends Controller
+class ForumController extends AbstractController
 {
     public static function __setupNavigation()
     {
@@ -44,20 +45,23 @@ class ForumController extends Controller
         return 10;
     }
 
-    public function boardList($navigation, $forum)
+    public function boardList($navigation, Forum $forum)
     {
         $em = $this->getDoctrine()->getManager();
 
         $boardList = $em->getRepository(Board::class)->findBy(['forum' => $forum, 'parent_board' => null]);
 
-        return $this->render('theme_admin1/board-list.html.twig', [
-            'current_forum' => $forum,
-            'board_list' => $boardList,
-            'navigation_links' => $navigation,
-        ]);
+        return $this->render(
+            'theme_admin1/board-list.html.twig',
+            [
+                'current_forum' => $forum,
+                'board_list' => $boardList,
+                'navigation_links' => $navigation,
+            ]
+        );
     }
 
-    public function newBoard(Request $request, ForumHelper $helper, $navigation, $forum)
+    public function newBoard(Request $request, ForumHelper $helper, $navigation, Forum $forum)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -69,7 +73,7 @@ class ForumController extends Controller
         if ($createBoardForm->isSubmitted() && $createBoardForm->isValid()) {
             $formData = $createBoardForm->getData();
 
-            /** @var \App\Entity\Board|null $parentBoard */
+            /** @var Board|null $parentBoard */
             $parentBoard = $em->getRepository(Board::class)->findOneBy(['id' => $formData['parent']]);
 
             $newBoard = new Board();
@@ -78,7 +82,8 @@ class ForumController extends Controller
                 ->setParentBoard($parentBoard)
                 ->setTitle($formData['name'])
                 ->setDescription($formData['description'])
-                ->setType($formData['type']);
+                ->setType($formData['type'])
+            ;
 
             $em->persist($newBoard);
             $em->flush();
@@ -86,10 +91,13 @@ class ForumController extends Controller
             $this->addFlash('board_added', '');
         }
 
-        return $this->render('theme_admin1/new-board.html.twig', [
-            'create_board_form' => $createBoardForm->createView(),
-            'current_forum' => $forum,
-            'navigation_links' => $navigation,
-        ]);
+        return $this->render(
+            'theme_admin1/new-board.html.twig',
+            [
+                'create_board_form' => $createBoardForm->createView(),
+                'current_forum' => $forum,
+                'navigation_links' => $navigation,
+            ]
+        );
     }
 }

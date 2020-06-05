@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,14 +22,14 @@ class Thread
     protected $id;
 
     /**
-     * @var \App\Entity\User
+     * @var User
      * @ORM\ManyToOne(targetEntity="\App\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
      */
     protected $user;
 
     /**
-     * @var \App\Entity\Board
+     * @var Board
      * @ORM\ManyToOne(targetEntity="Board", inversedBy="threads")
      * @ORM\JoinColumn(name="board_id", referencedColumnName="id", nullable=false)
      */
@@ -64,26 +66,26 @@ class Thread
     protected $closed = false;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      * @ORM\Column(type="datetime")
      */
     protected $created_on;
 
     /**
-     * @var null|\App\Entity\User
+     * @var User|null
      * @ORM\ManyToOne(targetEntity="\App\Entity\User")
      * @ORM\JoinColumn(name="last_post_user_id", referencedColumnName="id")
      */
     protected $last_post_user;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $last_post_time;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      * @ORM\OneToMany(targetEntity="Post", mappedBy="thread", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     protected $posts;
@@ -94,7 +96,7 @@ class Thread
     }
 
     /**
-     * @return int
+     * @return int The ID
      */
     public function getId(): int
     {
@@ -102,7 +104,7 @@ class Thread
     }
 
     /**
-     * @return \App\Entity\User
+     * @return User The user
      */
     public function getUser(): User
     {
@@ -110,7 +112,7 @@ class Thread
     }
 
     /**
-     * @param \App\Entity\User $user
+     * @param User $user The user
      *
      * @return $this
      */
@@ -122,7 +124,7 @@ class Thread
     }
 
     /**
-     * @return \App\Entity\Board
+     * @return Board The board
      */
     public function getBoard(): Board
     {
@@ -130,7 +132,7 @@ class Thread
     }
 
     /**
-     * @param \App\Entity\Board $board
+     * @param Board $board The board
      *
      * @return $this
      */
@@ -142,7 +144,7 @@ class Thread
     }
 
     /**
-     * @return string
+     * @return string The topic
      */
     public function getTopic(): string
     {
@@ -150,7 +152,7 @@ class Thread
     }
 
     /**
-     * @param string $topic
+     * @param string $topic The topic
      *
      * @return $this
      */
@@ -162,7 +164,7 @@ class Thread
     }
 
     /**
-     * @return int
+     * @return int The views
      */
     public function getViews(): int
     {
@@ -170,7 +172,7 @@ class Thread
     }
 
     /**
-     * @param int $views
+     * @param int $views The views
      *
      * @return $this
      */
@@ -182,7 +184,7 @@ class Thread
     }
 
     /**
-     * @return int
+     * @return int The replies
      */
     public function getReplies(): int
     {
@@ -190,7 +192,7 @@ class Thread
     }
 
     /**
-     * @param int $replies
+     * @param int $replies The replies
      *
      * @return $this
      */
@@ -202,7 +204,7 @@ class Thread
     }
 
     /**
-     * @return bool
+     * @return bool Whether the thread is sticky
      */
     public function isSticky(): bool
     {
@@ -210,7 +212,7 @@ class Thread
     }
 
     /**
-     * @param bool $sticky
+     * @param bool $sticky Whether the thread is sticky
      *
      * @return $this
      */
@@ -222,7 +224,7 @@ class Thread
     }
 
     /**
-     * @return bool
+     * @return bool Whether the thread is closed
      */
     public function isClosed(): bool
     {
@@ -230,7 +232,7 @@ class Thread
     }
 
     /**
-     * @param bool $closed
+     * @param bool $closed Whether the thread is closed
      *
      * @return $this
      */
@@ -242,19 +244,19 @@ class Thread
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime The date when the thread was created
      */
-    public function getCreatedOn(): \DateTime
+    public function getCreatedOn(): DateTime
     {
         return $this->created_on;
     }
 
     /**
-     * @param \DateTime $created_on
+     * @param DateTime $created_on The date when the thread was created
      *
      * @return $this
      */
-    public function setCreatedOn(\DateTime $created_on): self
+    public function setCreatedOn(DateTime $created_on): self
     {
         $this->created_on = $created_on;
 
@@ -262,7 +264,7 @@ class Thread
     }
 
     /**
-     * @return \App\Entity\User|null
+     * @return User|null The user of the last post
      */
     public function getLastPostUser(): ?User
     {
@@ -270,7 +272,7 @@ class Thread
     }
 
     /**
-     * @param \App\Entity\User|null $last_post_user
+     * @param User|null $last_post_user The user of the last post
      *
      * @return $this
      */
@@ -282,19 +284,19 @@ class Thread
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null The last time something was posted
      */
-    public function getLastPostTime(): ?\DateTime
+    public function getLastPostTime(): ?DateTime
     {
         return $this->last_post_time;
     }
 
     /**
-     * @param \DateTime|null $last_post_time
+     * @param DateTime|null $last_post_time The last time something was posted
      *
      * @return $this
      */
-    public function setLastPostTime(\DateTime $last_post_time = null): self
+    public function setLastPostTime(DateTime $last_post_time = null): self
     {
         $this->last_post_time = $last_post_time;
 
@@ -302,7 +304,7 @@ class Thread
     }
 
     /**
-     * @return \App\Entity\Post[]
+     * @return Post[] The posts
      */
     public function getPosts(): array
     {
@@ -310,7 +312,7 @@ class Thread
     }
 
     /**
-     * @param \App\Entity\Post $post
+     * @param Post $post The post
      *
      * @return $this
      */
@@ -323,7 +325,7 @@ class Thread
     }
 
     /**
-     * @param \App\Entity\Post $post
+     * @param Post $post The post
      *
      * @return $this
      */
@@ -337,7 +339,7 @@ class Thread
     }
 
     /**
-     * @return array
+     * @return array An array of all the properties of an object
      */
     public function toArray(): array
     {

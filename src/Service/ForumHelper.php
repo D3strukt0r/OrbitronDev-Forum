@@ -4,10 +4,12 @@ namespace App\Service;
 
 use App\Entity\Board;
 use App\Entity\Forum;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ForumHelper
 {
+    const DEFAULT_SHOW_THREAD_COUNT = 10;
+
     public static $settings = [
         'forum' => [
             'name' => [
@@ -19,14 +21,12 @@ class ForumHelper
         ],
     ];
 
-    const DEFAULT_SHOW_THREAD_COUNT = 10;
-
     /**
-     * @var \Doctrine\Common\Persistence\ObjectManager
+     * @var EntityManagerInterface
      */
     private $em;
 
-    public function __construct(ObjectManager $manager)
+    public function __construct(EntityManagerInterface $manager)
     {
         $this->em = $manager;
     }
@@ -40,7 +40,7 @@ class ForumHelper
      */
     public function urlExists($url)
     {
-        /** @var \App\Entity\Forum[] $find */
+        /** @var Forum[] $find */
         $find = $this->em->getRepository(Forum::class)->findBy(['url' => $url]);
 
         if (count($find)) {
@@ -53,9 +53,9 @@ class ForumHelper
     /**
      * Get a breadcrumb for the current tree.
      *
-     * @param \App\Entity\Board $board
+     * @param Board $board
      *
-     * @return \App\Entity\Board[]
+     * @return Board[]
      */
     public function getBreadcrumb($board)
     {
@@ -73,16 +73,16 @@ class ForumHelper
     }
 
     /**
-     * @param \App\Entity\Forum      $forum
-     * @param \App\Entity\Board|null $board
-     * @param int                    $level
-     * @param array                  $list
+     * @param Forum      $forum
+     * @param Board|null $board
+     * @param int        $level
+     * @param array      $list
      *
      * @return array
      */
     public function listBoardsFormSelect($forum, $board, $level = 1, &$list = [])
     {
-        /** @var \App\Entity\Board[] $boardList */
+        /** @var Board[] $boardList */
         $boardList = $this->em->getRepository(Board::class)->findBy(['forum' => $forum, 'parent_board' => $board]);
 
         if (empty($list)) {

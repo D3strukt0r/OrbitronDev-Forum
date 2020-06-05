@@ -2,9 +2,10 @@
 
 namespace App\Controller\Panel;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\Entity\Forum;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class PostingController extends Controller
+class PostingController extends AbstractController
 {
     public static function __setupNavigation()
     {
@@ -32,11 +33,14 @@ class PostingController extends Controller
         return 20;
     }
 
-    public function bbCode($navigation, $forum)
+    public function bbCode($navigation, Forum $forum)
     {
-        return $this->forward('App\\Controller\\Panel\\DefaultController::notFound', [
-            'navigation' => $navigation,
-            'forum' => $forum,
-        ]);
+        return $this->forward(
+            'App\\Controller\\Panel\\DefaultController::notFound',
+            [
+                'navigation' => $navigation,
+                'forum' => $forum,
+            ]
+        );
     }
 }

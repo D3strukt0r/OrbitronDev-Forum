@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,6 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Board
 {
+    const TYPE_BOARD = 1;
+    const TYPE_CATEGORY = 2;
+
     /**
      * @var int
      * @ORM\Id
@@ -20,14 +25,14 @@ class Board
     protected $id;
 
     /**
-     * @var \App\Entity\Forum
+     * @var Forum
      * @ORM\ManyToOne(targetEntity="Forum", inversedBy="boards")
      * @ORM\JoinColumn(name="forum_id", referencedColumnName="id", nullable=false)
      */
     protected $forum;
 
     /**
-     * @var null|\App\Entity\Board
+     * @var Board|null
      * @ORM\ManyToOne(targetEntity="Board", inversedBy="boards")
      * @ORM\JoinColumn(name="parent_board_id", referencedColumnName="id")
      */
@@ -51,18 +56,15 @@ class Board
      */
     protected $type;
 
-    const TYPE_BOARD = 1;
-    const TYPE_CATEGORY = 2;
-
     /**
-     * @var null|\App\Entity\User
+     * @var User|null
      * @ORM\ManyToOne(targetEntity="\App\Entity\User")
      * @ORM\JoinColumn(name="last_post_user_id", referencedColumnName="id")
      */
     protected $last_post_user;
 
     /**
-     * @var \DateTime|null
+     * @var DateTime|null
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $last_post_time;
@@ -80,13 +82,13 @@ class Board
     protected $post_count = 0;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      * @ORM\OneToMany(targetEntity="Board", mappedBy="parent_board", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     protected $boards;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      * @ORM\OneToMany(targetEntity="Thread", mappedBy="board", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     protected $threads;
@@ -98,7 +100,7 @@ class Board
     }
 
     /**
-     * @return int
+     * @return int The ID
      */
     public function getId(): int
     {
@@ -106,7 +108,7 @@ class Board
     }
 
     /**
-     * @return \App\Entity\Forum
+     * @return Forum The forum
      */
     public function getForum(): Forum
     {
@@ -114,7 +116,7 @@ class Board
     }
 
     /**
-     * @param \App\Entity\Forum $forum
+     * @param Forum $forum The forum
      *
      * @return $this
      */
@@ -126,7 +128,7 @@ class Board
     }
 
     /**
-     * @return \App\Entity\Board|null
+     * @return Board|null The parent board or null if already the top-most board
      */
     public function getParentBoard(): ?self
     {
@@ -134,7 +136,7 @@ class Board
     }
 
     /**
-     * @param \App\Entity\Board|null $parent_board
+     * @param Board|null $parent_board The parent board or null if already the top-most board
      *
      * @return $this
      */
@@ -146,7 +148,7 @@ class Board
     }
 
     /**
-     * @return string
+     * @return string The title
      */
     public function getTitle(): string
     {
@@ -154,7 +156,7 @@ class Board
     }
 
     /**
-     * @param string $title
+     * @param string $title The title
      *
      * @return $this
      */
@@ -166,7 +168,7 @@ class Board
     }
 
     /**
-     * @return null|string
+     * @return string|null The description
      */
     public function getDescription(): ?string
     {
@@ -174,7 +176,7 @@ class Board
     }
 
     /**
-     * @param null|string $description
+     * @param string|null $description The description
      *
      * @return $this
      */
@@ -186,7 +188,7 @@ class Board
     }
 
     /**
-     * @return int
+     * @return int The type
      */
     public function getType(): int
     {
@@ -194,7 +196,7 @@ class Board
     }
 
     /**
-     * @param int $type
+     * @param int $type The type
      *
      * @return $this
      */
@@ -206,7 +208,7 @@ class Board
     }
 
     /**
-     * @return \App\Entity\User|null
+     * @return User|null The use who last posted
      */
     public function getLastPostUser(): ?User
     {
@@ -214,7 +216,7 @@ class Board
     }
 
     /**
-     * @param \App\Entity\User|null $last_post_user
+     * @param User|null $last_post_user The user who last posted
      *
      * @return $this
      */
@@ -226,19 +228,19 @@ class Board
     }
 
     /**
-     * @return \DateTime|null
+     * @return DateTime|null The last time somebody posted
      */
-    public function getLastPostTime(): ?\DateTime
+    public function getLastPostTime(): ?DateTime
     {
         return $this->last_post_time;
     }
 
     /**
-     * @param \DateTime|null $last_post_time
+     * @param DateTime|null $last_post_time The last time somebody posted
      *
      * @return $this
      */
-    public function setLastPostTime(\DateTime $last_post_time = null): self
+    public function setLastPostTime(DateTime $last_post_time = null): self
     {
         $this->last_post_time = $last_post_time;
 
@@ -246,7 +248,7 @@ class Board
     }
 
     /**
-     * @return int
+     * @return int The number of threads
      */
     public function getThreadCount(): int
     {
@@ -254,7 +256,7 @@ class Board
     }
 
     /**
-     * @param int $threads
+     * @param int $threads The number of threads
      *
      * @return $this
      */
@@ -266,7 +268,7 @@ class Board
     }
 
     /**
-     * @return int
+     * @return int The number of posts
      */
     public function getPostCount(): int
     {
@@ -274,7 +276,7 @@ class Board
     }
 
     /**
-     * @param int $posts
+     * @param int $posts The number of posts
      *
      * @return $this
      */
@@ -286,7 +288,7 @@ class Board
     }
 
     /**
-     * @return \App\Entity\Thread[]
+     * @return Thread[] The threads
      */
     public function getThreads(): array
     {
@@ -294,7 +296,7 @@ class Board
     }
 
     /**
-     * @param \App\Entity\Thread $thread
+     * @param Thread $thread The thread
      *
      * @return $this
      */
@@ -307,7 +309,7 @@ class Board
     }
 
     /**
-     * @param \App\Entity\Thread $thread
+     * @param Thread $thread The thread
      *
      * @return $this
      */
@@ -321,7 +323,7 @@ class Board
     }
 
     /**
-     * @return \App\Entity\Board[]
+     * @return Board[] The boards
      */
     public function getBoards(): array
     {
@@ -329,7 +331,7 @@ class Board
     }
 
     /**
-     * @param \App\Entity\Board $board
+     * @param Board $board The board
      *
      * @return $this
      */
@@ -342,7 +344,7 @@ class Board
     }
 
     /**
-     * @param \App\Entity\Board $board
+     * @param Board $board The board
      *
      * @return $this
      */
@@ -356,7 +358,7 @@ class Board
     }
 
     /**
-     * @return array
+     * @return array An array of all the properties of an object
      */
     public function toArray(): array
     {

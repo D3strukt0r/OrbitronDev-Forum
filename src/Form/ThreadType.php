@@ -14,22 +14,35 @@ class ThreadType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, [
-                'label' => 'service_create_thread.form.title.label',
-                'attr' => [
-                    'placeholder' => 'service_create_thread.form.title.placeholder',
-                ],
-                'constraints' => [
-                    new NotBlank(['message' => 'new_thread.title.not_blank']),
-                ],
-            ])
-            ->add('message', TextareaType::class, [
-                'constraints' => [
-                    new NotBlank(['message' => 'new_thread.message.not_blank']),
-                ],
-            ])
-            ->add('send', SubmitType::class, [
-                'label' => 'service_create_thread.form.send.label',
-            ]);
+            ->add(
+                'title',
+                TextType::class,
+                [
+                    'label' => 'service_create_thread.form.title.label',
+                    'attr' => [
+                        'placeholder' => 'service_create_thread.form.title.placeholder',
+                    ],
+                    'constraints' => [
+                        new NotBlank(['message' => 'new_thread.title.not_blank']),
+                    ],
+                ]
+            )
+            ->add(
+                'message',
+                TextareaType::class,
+                [
+                    'constraints' => [
+                        new NotBlank(['message' => 'new_thread.message.not_blank']),
+                    ],
+                ]
+            )
+            ->add(
+                'send',
+                SubmitType::class,
+                [
+                    'label' => 'service_create_thread.form.send.label',
+                ]
+            )
+        ;
     }
 }
