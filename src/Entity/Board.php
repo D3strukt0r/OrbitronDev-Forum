@@ -13,8 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Board
 {
-    const TYPE_BOARD = 1;
-    const TYPE_CATEGORY = 2;
+    public const TYPE_BOARD = 1;
+    public const TYPE_CATEGORY = 2;
 
     /**
      * @var int

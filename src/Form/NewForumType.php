@@ -66,7 +66,8 @@ class NewForumType extends AbstractType
                         ),
                         new Expression(
                             [
-                                'expression' => 'value not in ["new-forum", "admin", "login", "login-check", "logout", "user", "setup"]',
+                                'expression' => 'value not in ["new-forum", "admin", "login", "login-check", ' .
+                                    '"logout", "user", "setup"]',
                                 'message' => 'new_forum.url.not_equal_to',
                             ]
                         ),

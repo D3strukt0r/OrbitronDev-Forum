@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ForumHelper
 {
-    const DEFAULT_SHOW_THREAD_COUNT = 10;
+    public const DEFAULT_SHOW_THREAD_COUNT = 10;
 
     public static $settings = [
         'forum' => [
@@ -95,7 +95,7 @@ class ForumHelper
                 $line .= '-';
             }
 
-            $title = $line.' '.$currentBoard->getTitle().' (ID: '.$currentBoard->getId().')';
+            $title = $line . ' ' . $currentBoard->getTitle() . ' (ID: ' . $currentBoard->getId() . ')';
             $list[$title] = $currentBoard->getId();
 
             // Has sub-boards

@@ -23,7 +23,7 @@ class PostType extends AbstractType
                     'attr' => [
                         'placeholder' => 'service_create_post.form.title.placeholder',
                     ],
-                    'data' => 'RE: '.$options['topic'],
+                    'data' => 'RE: ' . $options['topic'],
                     'constraints' => [
                         new NotBlank(['message' => 'new_post.title.not_blank']),
                     ],
